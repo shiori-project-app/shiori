@@ -29,6 +29,7 @@ Linux support hasn't been run on a real Linux system yet, only checked by unit t
 - **Restart:** `relaunchOptions` restarts the AppImage file, because its mounted copy goes away on quit.
 - **Cleanup:** the UI says Trash, and paths compare with exact capitals. `shell.trashItem` needs the desktop's trash tool, usually `gio`. If it's missing, the file stays where it is and the error says so.
 - **Show folders:** folders ending in a dot or space stay as they are, because the rename at startup only runs on Windows.
+- **Updates:** the AppImage replaces its own file, deb, rpm and pacman ask for a password, and the tar.gz can't update. See [releasing.md](releasing.md).
 - **Backups from Windows:** saved file links are full paths, so after a restore they show as not found until they're linked again.
 
 ## Known limits

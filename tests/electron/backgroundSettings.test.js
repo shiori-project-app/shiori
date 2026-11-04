@@ -9,6 +9,8 @@ const fakes = vi.hoisted(() => ({
   handlers: new Map(),
   getLoginItemSettings: vi.fn(),
   setLoginItemSettings: vi.fn(),
+  relaunch: vi.fn(),
+  quit: vi.fn(),
 }));
 
 vi.mock('electron', () => ({
@@ -21,6 +23,8 @@ vi.mock('electron', () => ({
 
     getLoginItemSettings: fakes.getLoginItemSettings,
     setLoginItemSettings: fakes.setLoginItemSettings,
+    relaunch: fakes.relaunch,
+    quit: fakes.quit,
     commandLine: { appendSwitch: () => {} },
   },
 
@@ -67,6 +71,44 @@ describe('background settings', () => {
     const { getSettings } = await loadHandlers();
 
     expect(getSettings()).toMatchObject({ keepRunningInTray: false, startAtLogin: false });
+  });
+
+  describe('restarting', () => {
+    beforeEach(() => {
+      fakes.relaunch.mockReset();
+      fakes.quit.mockReset();
+    });
+
+    it('restarts normally when no update is waiting', async () => {
+      await loadHandlers();
+      fakes.handlers.get('settings:restart')();
+
+      expect(fakes.relaunch).toHaveBeenCalledTimes(1);
+      expect(fakes.quit).toHaveBeenCalledTimes(1);
+    });
+
+    it('lets a waiting update do the restart, or the installer would close the relaunched app', async () => {
+      await loadHandlers();
+
+      const { setPendingUpdateInstaller } = await import('../../electron/ipc/settings.js');
+
+      setPendingUpdateInstaller(() => true);
+      fakes.handlers.get('settings:restart')();
+
+      expect(fakes.relaunch).not.toHaveBeenCalled();
+      expect(fakes.quit).not.toHaveBeenCalled();
+    });
+  });
+
+  it('leaves downloading updates up to the user until they turn it on', async () => {
+    const { getSettings } = await loadHandlers();
+
+    expect(getSettings().autoUpdate).toBe(false);
+
+    fakes.handlers.get('settings:update-auto-update')({}, { autoUpdate: true });
+
+    expect(getSettings().autoUpdate).toBe(true);
+    expect(savedSettings().autoUpdate).toBe(true);
   });
 
   it('saves keeping running in the tray', async () => {

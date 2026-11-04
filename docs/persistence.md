@@ -7,7 +7,7 @@
   - `fileLinks` maps a series id to `{ folders, episodes }`. It stores full paths, so a link stops applying if the download folder changes.
 - `<userData>/data/activity.json`, through `useUserDataState`, holds history and resume progress.
 - `localStorage` under `shiori:*`, through `usePersistentState`, holds the theme, display, player and torrent preferences, and autoplay.
-- `<userData>/settings.json`, through `SettingsContext`, holds the download folder (`<userData>/Downloads` by default), parallel downloads, the speed limit, smooth graphics, the cleanup move folder and keep running in the tray.
+- `<userData>/settings.json`, through `SettingsContext`, holds the download folder (`<userData>/Downloads` by default), parallel downloads, the speed limit, smooth graphics, the cleanup move folder, keep running in the tray and automatic updates.
 - `<userData>/downloads.json`, through `DownloadsContext`, holds the download queue.
 - `<userData>/offline/` holds saved shows, covers and skip times for offline use. It's a cache and isn't backed up; see [offline.md](offline.md).
 - `<userData>/anilist-cache/` holds saved AniList responses. It's a cache and isn't backed up; see [api.md](api.md).

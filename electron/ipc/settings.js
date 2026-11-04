@@ -25,6 +25,7 @@ const defaultSettings = () => ({
   smoothGraphics: false,
   cleanupMoveFolder: null,
   keepRunningInTray: false,
+  autoUpdate: false,
 });
 
 let currentSettings = null;
@@ -98,6 +99,9 @@ export const saveCleanupMoveFolder = (folder) => settingsForPage(saveSettings({ 
 export const updateGraphicsSetting = (changes) =>
   settingsForPage(saveSettings({ smoothGraphics: changes?.smoothGraphics === true }));
 
+const updateAutoUpdateSetting = (changes) =>
+  settingsForPage(saveSettings({ autoUpdate: changes?.autoUpdate === true }));
+
 const updateBackgroundSettings = (changes) => {
   if (typeof changes?.startAtLogin === 'boolean') setOpensAtLogin(changes.startAtLogin);
 
@@ -109,7 +113,15 @@ const updateBackgroundSettings = (changes) => {
   return settingsForPage(settings);
 };
 
+let installPendingUpdate = () => false;
+
+export const setPendingUpdateInstaller = (installer) => {
+  installPendingUpdate = installer;
+};
+
 const restartApp = () => {
+  if (installPendingUpdate()) return;
+
   app.relaunch(relaunchOptions());
   app.quit();
 };
@@ -145,6 +157,7 @@ export const registerSettingsHandlers = () => {
 
   ipcMain.handle('settings:update-graphics', (_event, changes) => updateGraphicsSetting(changes));
   ipcMain.handle('settings:update-background', (_event, changes) => updateBackgroundSettings(changes));
+  ipcMain.handle('settings:update-auto-update', (_event, changes) => updateAutoUpdateSetting(changes));
   ipcMain.handle('settings:restart', restartApp);
   ipcMain.handle('settings:open-download-dir', openDownloadFolder);
 };

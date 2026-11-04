@@ -22,7 +22,7 @@ npm run dev
 - `npm run build` builds the page into `dist/`.
 - `npx vp check` checks formatting and lint rules. Add `--fix` to apply formatting.
 - `npx vp test run` runs all tests. Pass a file path to run one file, `-t "name"` to filter by test name, or `--project electron` to run only the main-process tests.
-- `npm run dist` builds the Windows installer into `release/`. Close any running copy of Shiori first, because a locked `release/win-unpacked` makes the build fail.
+- `npm run dist` builds the Windows installer and its update files into `release/`. See [releasing.md](releasing.md) for publishing them. Close any running copy of Shiori first, because a locked `release/win-unpacked` makes the build fail.
 - `npm run dist:linux` builds the Linux packages. It has to run on Linux; see [linux.md](linux.md).
 
 ## How the app is organized
@@ -65,6 +65,7 @@ Each file below is a short reference. Open the one you need, then follow it to t
 - [offline.md](offline.md) covers offline mode, saved shows and fallbacks.
 - [performance.md](performance.md) covers known performance issues and the decisions behind the current design.
 - [linux.md](linux.md) covers building and running on Linux.
+- [releasing.md](releasing.md) covers publishing a release and how auto-update works.
 - [api.md](api.md) covers API clients, mappers and services.
 - [contexts.md](contexts.md) lists the React contexts.
 - [main-process.md](main-process.md) covers `electron/` and `shared/`.

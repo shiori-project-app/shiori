@@ -5,6 +5,7 @@ export const SETTINGS_TABS = [
   { id: 'downloads', label: 'Downloads', icon: 'download' },
   { id: 'backup', label: 'Backup', icon: 'archive' },
   { id: 'storage', label: 'Storage', icon: 'folder' },
+  { id: 'updates', label: 'Updates', icon: 'refresh' },
 ];
 
 export const DEFAULT_SETTINGS_TAB = SETTINGS_TABS[0].id;

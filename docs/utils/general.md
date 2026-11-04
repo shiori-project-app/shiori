@@ -17,4 +17,5 @@
   - `applyReduceMotion`, which sets `data-reduce-motion` on `<html>`. `base/_global.scss` treats it like the system setting: the two loading spinners keep turning, and skeletons pulse instead of shimmering.
   - `scrollByWidthFraction` for rail arrows, which jumps when motion is reduced.
   - `systemPrefersReducedMotion` and `subscribeToSystemMotion`.
+- `updateStatus.js` exports `updateStatusText`, `updateAvailableMessage` and `updateReadyMessage`, the text shown for each app update phase.
 - `player.js` exports `resumablePosition`, `playedPercent`, `trackLabel`, `isPlayerControlTarget`, skip button and notice labels, `segmentMarksGradient` for the seek-bar marks, and `describeSegments`.

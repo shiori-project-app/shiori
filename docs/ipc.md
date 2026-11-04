@@ -9,7 +9,7 @@ A new channel needs four pieces: an `ipcMain.handle` in `electron/ipc/*`, its `r
 Each entry lists the client functions, their channels and the handler file in `electron/ipc/`.
 
 - `fetchText` uses `net:fetch-text` in `network.js`, which enforces a host allow-list.
-- `getSettings`, `chooseDownloadDir`, `openDownloadDir`, `updateDownloadSettings`, `updateGraphicsSetting`, `updateBackgroundSettings` and `restartApp` use `settings:get`, `:choose-download-dir`, `:open-download-dir`, `:update-downloads`, `:update-graphics`, `:update-background` and `:restart` in `settings.js`.
+- `getSettings`, `chooseDownloadDir`, `openDownloadDir`, `updateDownloadSettings`, `updateGraphicsSetting`, `updateBackgroundSettings`, `updateAutoUpdateSetting` and `restartApp` use `settings:get`, `:choose-download-dir`, `:open-download-dir`, `:update-downloads`, `:update-graphics`, `:update-background`, `:update-auto-update` and `:restart` in `settings.js`.
 - `showMainWindow` uses `window:show`, registered in `main.js`.
 - `loadUserData`, `saveUserData` and `replaceUserData` use `user-data:load`, `:set` and `:replace` in `userData.js`.
 - `loadOfflineLibrary`, `saveOfflineSeries`, `removeOfflineSeries` and `saveOfflineSkipTimes` use `offline:load`, `:save-series`, `:remove-series` and `:save-skip-times` in `offline.js`.
@@ -20,6 +20,7 @@ Each entry lists the client functions, their channels and the handler file in `e
 - `readAniListResponse` and `saveAniListResponse` use `anilist-cache:read` and `:save` in `anilistCache.js`.
 - `getCacheUsage`, `clearSubtitleCache` and `clearAniListData` use `caches:usage`, `:clear-subtitles` and `:clear-anilist` in `caches.js`.
 - `getDownloadFolderUsage`, `getFileSizes`, `chooseCleanupMoveFolder` and `cleanUpFile` use `cleanup:usage`, `:file-sizes`, `:choose-move-folder` and `:clean-file` in `cleanup.js`.
+- `getUpdateState`, `checkForUpdates`, `downloadUpdate` and `installUpdate` use `updates:get-state`, `:check`, `:download` and `:install` in `updates.js`.
 - `listDownloads`, `addDownloads`, the per-item actions (pause, resume, cancel, retry, move, remove, show), `pauseAllDownloads`, `resumeAllDownloads` and `clearFinishedDownloads` use the `downloads:*` channels in `downloads.js`.
 
 ## Events from the main process
@@ -30,6 +31,7 @@ Subscribe with the matching `on…` function in `desktopClient`.
 - `window:hidden-to-tray` (`onHiddenToTray`) pauses the player.
 - `downloads:changed` (`onDownloadsChanged`) sends the whole queue, throttled to every 200 ms.
 - `user-data:save-failed` (`onUserDataSaveFailed`) shows a toast.
+- `updates:changed` (`onUpdateStateChanged`) sends the app update state.
 
 ## Media protocol
 
