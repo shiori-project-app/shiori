@@ -14,12 +14,14 @@ import { registerNetworkHandlers } from './ipc/network.js';
 import { registerOfflineHandlers } from './ipc/offline.js';
 import { applyGraphicsSettingAtLaunch, registerSettingsHandlers } from './ipc/settings.js';
 import { registerTorrentHandlers } from './ipc/torrents.js';
+import { registerUpdateHandlers } from './ipc/updates.js';
 import { registerUserDataHandlers } from './ipc/userData.js';
 import { isLinux } from './linuxDesktop.js';
 import { refreshLauncherEntry } from './linuxLauncherEntry.js';
 import { logInfo, logUnhandledProcessErrors } from './logger.js';
 import { keepWindowInTrayOnClose, opensInTray, showMainWindow, startTray } from './tray.js';
 import { isWebUrl } from './webUrls.js';
+import { sendToAllWindows } from './windowMessages.js';
 
 const electronDirectory = path.dirname(fileURLToPath(import.meta.url));
 const DEV_SERVER_URL = 'http://127.0.0.1:5173';
@@ -79,8 +81,7 @@ const createWindow = () => {
   else mainWindow.loadFile(APP_PAGE_FILE);
 };
 
-const notifyWindowsOfSystemResume = () =>
-  BrowserWindow.getAllWindows().forEach((window) => window.webContents.send('system:resume'));
+const notifyWindowsOfSystemResume = () => sendToAllWindows('system:resume');
 
 const IPC_HANDLER_REGISTRATIONS = [
   registerSettingsHandlers,
@@ -95,6 +96,7 @@ const IPC_HANDLER_REGISTRATIONS = [
   registerCacheHandlers,
   registerCleanupHandlers,
   registerMediaHandlers,
+  registerUpdateHandlers,
 ];
 
 const startApp = () => {

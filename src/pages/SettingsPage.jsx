@@ -5,6 +5,7 @@ import { DisplayPanel } from '@/components/settings/DisplayPanel';
 import { DownloadsPanel } from '@/components/settings/DownloadsPanel';
 import { PlaybackPanel } from '@/components/settings/PlaybackPanel';
 import { StoragePanel } from '@/components/settings/StoragePanel';
+import { UpdatesPanel } from '@/components/settings/UpdatesPanel';
 import { DEFAULT_SETTINGS_TAB, SETTINGS_TABS } from '@/constants/settingsTabs';
 import { useSearchParam } from '@/hooks/useSearchParam';
 
@@ -17,6 +18,7 @@ const PANELS_BY_TAB = {
   downloads: DownloadsPanel,
   backup: BackupPanel,
   storage: StoragePanel,
+  updates: UpdatesPanel,
 };
 
 export const SettingsPage = () => {

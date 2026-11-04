@@ -14,5 +14,6 @@ Tabs come from `constants/settingsTabs.js`, and `SettingsPage` renders the activ
 - `BackupPanel` exports and restores backups and exports the list for MyAnimeList, using `useBackupActions`.
 - `StoragePanel` shows `DownloadFolderSection`, then the sizes of the subtitle cache and saved AniList data, each with a Clear button. Clearing AniList data is disabled offline.
 - `DownloadFolderSection` shows the disk usage readout and the cleanup settings (days, and Recycle Bin, Trash or a move folder), and opens `WatchedCleanupDialog` using `useWatchedCleanup`.
+- `UpdatesPanel` shows the current version and update status, with the matching action button and the Download updates automatically switch. It locks the switch in a copy that can't update.
 - `WatchedCleanupDialog` lists the exact files to clean up with checkboxes, leaving partial name matches unticked. It shows confirmation, progress, then what failed and why, and can't be closed while running.
 - `RestoreBackupDialog` confirms a restore and shows the backup's counts and any restore error. It can't be closed while restoring.

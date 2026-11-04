@@ -9,5 +9,6 @@
   - It holds while `useReducedMotion` is true and picks up again if that changes.
   - `pauseHandlers` hold it while hovered or while keyboard focus is inside. A mouse click doesn't count, and a focused element that gets removed stops counting.
   - It holds while the window is hidden, and a manual pick stops it.
+- `usePageVisible()` returns whether the window is visible, and updates when it's hidden or shown.
 - `useInView(rootMargin)` returns `[ref, hasBeenNearViewport]`, used by `Deferred`.
 - `useDebouncedValue(value, ms)` returns a value that updates after a pause.

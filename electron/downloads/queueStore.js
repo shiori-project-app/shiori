@@ -1,8 +1,9 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { app, BrowserWindow } from 'electron';
+import { app } from 'electron';
 import { writeFileAtomically } from '../fileSystem.js';
 import { logError } from '../logger.js';
+import { sendToAllWindows } from '../windowMessages.js';
 
 const SAVE_DELAY_MS = 2000;
 const BROADCAST_DELAY_MS = 200;
@@ -38,8 +39,7 @@ export const loadJobs = () => {
 
 export const saveJobsNow = () => writeFileAtomically(queueFile(), JSON.stringify(jobs));
 
-const broadcastJobs = () =>
-  BrowserWindow.getAllWindows().forEach((window) => window.webContents.send('downloads:changed', jobs));
+const broadcastJobs = () => sendToAllWindows('downloads:changed', jobs);
 
 const notifyJobsChanged = () => {
   pendingSave ??= setTimeout(() => {

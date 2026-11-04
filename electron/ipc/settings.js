@@ -33,6 +33,7 @@ const defaultSettings = () => ({
   smoothGraphics: false,
   cleanupMoveFolder: null,
   keepRunningInTray: false,
+  autoUpdate: false,
 });
 
 let currentSettings = null;
@@ -106,6 +107,9 @@ export const saveCleanupMoveFolder = (folder) => settingsForPage(saveSettings({ 
 export const updateGraphicsSetting = (changes) =>
   settingsForPage(saveSettings({ smoothGraphics: changes?.smoothGraphics === true }));
 
+const updateAutoUpdateSetting = (changes) =>
+  settingsForPage(saveSettings({ autoUpdate: changes?.autoUpdate === true }));
+
 const updateBackgroundSettings = (changes) => {
   if (typeof changes?.startAtLogin === 'boolean') setOpensAtLogin(changes.startAtLogin);
 
@@ -115,6 +119,12 @@ const updateBackgroundSettings = (changes) => {
       : getSettings();
 
   return settingsForPage(settings);
+};
+
+let installPendingUpdate = () => false;
+
+export const setPendingUpdateInstaller = (installer) => {
+  installPendingUpdate = installer;
 };
 
 const restartArguments = () => process.argv.slice(1).filter((argument) => argument !== START_IN_TRAY_ARGUMENT);
@@ -134,7 +144,11 @@ const restartOnWindows = () => {
   app.quit();
 };
 
-const restartApp = () => (isLinux() ? restartOnLinux() : restartOnWindows());
+const restartApp = () => {
+  if (installPendingUpdate()) return undefined;
+
+  return isLinux() ? restartOnLinux() : restartOnWindows();
+};
 
 const chooseDownloadFolder = async (event) => {
   const { canceled, filePaths } = await dialog.showOpenDialog(BrowserWindow.fromWebContents(event.sender), {
@@ -167,6 +181,7 @@ export const registerSettingsHandlers = () => {
 
   ipcMain.handle('settings:update-graphics', (_event, changes) => updateGraphicsSetting(changes));
   ipcMain.handle('settings:update-background', (_event, changes) => updateBackgroundSettings(changes));
+  ipcMain.handle('settings:update-auto-update', (_event, changes) => updateAutoUpdateSetting(changes));
   ipcMain.handle('settings:restart', restartApp);
   ipcMain.handle('settings:open-download-dir', openDownloadFolder);
 };

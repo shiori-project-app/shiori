@@ -33,6 +33,6 @@ This page covers known performance issues and why the code is the way it is. Fig
 - Page code isn't prefetched, because page opens already take 5–29 ms, or 16–69 ms on low-end.
 - Page data isn't prefetched, because each prefetch would spend the 30-a-minute AniList budget on pages that may never open.
 - Modals aren't lazy-loaded. `RestoreBackupDialog` is already in the lazy Settings chunk, `TrackDialog` is about 4 kB, and `trackingService` keeps the download services in the startup code anyway.
-- The app has no runtime dependencies, and offline sync and tracking start after a delay, to keep startup fast.
+- The only runtime dependency is `electron-updater`, which loads 5 s after startup. Offline sync and tracking also start after a delay, to keep startup fast.
 - `Menu.setApplicationMenu(null)` isn't used. It made no measurable difference to startup and would remove the zoom and reload shortcuts.
 - These weren't needed at the time of measuring: list virtualization, splitting `LibraryContext`, moving the library scan to a worker (6,000 files scan in 30 ms), and limits on the in-memory caches.

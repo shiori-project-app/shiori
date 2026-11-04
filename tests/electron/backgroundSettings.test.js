@@ -84,6 +84,57 @@ describe('background settings', () => {
     expect(getSettings()).toMatchObject({ keepRunningInTray: false, startAtLogin: false });
   });
 
+  describe('restarting', () => {
+    beforeEach(() => {
+      fakes.relaunch.mockReset();
+      fakes.quit.mockReset();
+    });
+
+    it('restarts normally when no update is waiting', async () => {
+      await loadHandlers();
+      fakes.handlers.get('settings:restart')();
+
+      expect(fakes.relaunch).toHaveBeenCalledTimes(1);
+      expect(fakes.quit).toHaveBeenCalledTimes(1);
+    });
+
+    it('lets a waiting update do the restart on Linux too, without starting a shell', async () => {
+      pretendPlatformIs('linux');
+      await loadHandlers();
+
+      const { setPendingUpdateInstaller } = await import('../../electron/ipc/settings.js');
+
+      setPendingUpdateInstaller(() => true);
+      await fakes.handlers.get('settings:restart')();
+
+      expect(fakes.spawn).not.toHaveBeenCalled();
+      expect(fakes.quit).not.toHaveBeenCalled();
+    });
+
+    it('lets a waiting update do the restart, or the installer would close the relaunched app', async () => {
+      await loadHandlers();
+
+      const { setPendingUpdateInstaller } = await import('../../electron/ipc/settings.js');
+
+      setPendingUpdateInstaller(() => true);
+      fakes.handlers.get('settings:restart')();
+
+      expect(fakes.relaunch).not.toHaveBeenCalled();
+      expect(fakes.quit).not.toHaveBeenCalled();
+    });
+  });
+
+  it('leaves downloading updates up to the user until they turn it on', async () => {
+    const { getSettings } = await loadHandlers();
+
+    expect(getSettings().autoUpdate).toBe(false);
+
+    fakes.handlers.get('settings:update-auto-update')({}, { autoUpdate: true });
+
+    expect(getSettings().autoUpdate).toBe(true);
+    expect(savedSettings().autoUpdate).toBe(true);
+  });
+
   it('saves keeping running in the tray', async () => {
     const { update } = await loadHandlers();
 

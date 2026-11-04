@@ -32,6 +32,7 @@ export const openDownloadDir = callDesktopWithoutArguments('openDownloadDir');
 export const updateDownloadSettings = callDesktop('updateDownloadSettings');
 export const updateGraphicsSetting = callDesktop('updateGraphicsSetting');
 export const updateBackgroundSettings = callDesktop('updateBackgroundSettings');
+export const updateAutoUpdateSetting = callDesktop('updateAutoUpdateSetting');
 export const showMainWindow = callDesktopWithoutArguments('showMainWindow');
 export const restartApp = callDesktopWithoutArguments('restartApp');
 
@@ -82,7 +83,13 @@ export const removeDownload = callDesktop('removeDownload');
 export const clearFinishedDownloads = callDesktopWithoutArguments('clearFinishedDownloads');
 export const showDownload = callDesktop('showDownload');
 
+export const getUpdateState = callDesktopWithoutArguments('getUpdateState');
+export const checkForUpdates = callDesktopWithoutArguments('checkForUpdates');
+export const downloadUpdate = callDesktopWithoutArguments('downloadUpdate');
+export const installUpdate = callDesktopWithoutArguments('installUpdate');
+
 export const onSystemResume = subscribeToDesktop('onSystemResume');
 export const onHiddenToTray = subscribeToDesktop('onHiddenToTray');
 export const onDownloadsChanged = subscribeToDesktop('onDownloadsChanged');
 export const onUserDataSaveFailed = subscribeToDesktop('onUserDataSaveFailed');
+export const onUpdateStateChanged = subscribeToDesktop('onUpdateStateChanged');

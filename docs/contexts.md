@@ -6,9 +6,9 @@
 - `AppearanceContext` provides `theme`, `accent`, `accentForTheme`, `setTheme` and `setAccent`. It applies them to `<html>` and saves them in `localStorage`.
 - `PreferencesContext` provides `titleLanguage`, `hideEcchi`, `hideSpoilers`, `autoSkip`, `reduceMotion`, `cleanupAfterDays`, `cleanupAction` and `setPreference`. Values are saved in `localStorage`.
 - `SettingsContext` provides the main-process settings:
-  - From `settings.json`: `downloadDir`, `maxParallelDownloads`, `speedLimitKBps`, `smoothGraphics`, `cleanupMoveFolder` and `keepRunningInTray`.
+  - From `settings.json`: `downloadDir`, `maxParallelDownloads`, `speedLimitKBps`, `smoothGraphics`, `cleanupMoveFolder`, `keepRunningInTray` and `autoUpdate`.
   - From the running system rather than the file: `smoothGraphicsAtLaunch`, `platform`, `canKeepRunningInTray`, `startAtLogin` and `canStartAtLogin`.
-  - Actions: `chooseDownloadDir`, `updateBackground`, `chooseCleanupMoveFolder`, `openDownloadDir`, `updateDownloads`, `updateGraphics` and `restartApp`.
+  - Actions: `chooseDownloadDir`, `updateBackground`, `chooseCleanupMoveFolder`, `openDownloadDir`, `updateDownloads`, `updateGraphics`, `updateAutoUpdate` and `restartApp`.
 - `LibraryContext` provides the user's library:
   - State: `list`, `watched`, `watchDates`, `history`, `notes` and `fileLinks` from the user data files, and `autoplay` from `localStorage`.
   - `progress` lives in its own `PlaybackProgressContext` (`usePlaybackProgress`). The player saves it every 15 s, and that must not re-render everything that reads the library.

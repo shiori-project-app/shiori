@@ -22,6 +22,7 @@ contextBridge.exposeInMainWorld('shiori', {
   updateDownloadSettings: invokeChannel('settings:update-downloads'),
   updateGraphicsSetting: invokeChannel('settings:update-graphics'),
   updateBackgroundSettings: invokeChannel('settings:update-background'),
+  updateAutoUpdateSetting: invokeChannel('settings:update-auto-update'),
   showMainWindow: invokeChannel('window:show'),
   restartApp: invokeChannel('settings:restart'),
 
@@ -72,8 +73,14 @@ contextBridge.exposeInMainWorld('shiori', {
   clearFinishedDownloads: invokeChannel('downloads:clear-finished'),
   showDownload: invokeChannel('downloads:show'),
 
+  getUpdateState: invokeChannel('updates:get-state'),
+  checkForUpdates: invokeChannel('updates:check'),
+  downloadUpdate: invokeChannel('updates:download'),
+  installUpdate: invokeChannel('updates:install'),
+
   onSystemResume: subscribeToChannel('system:resume'),
   onHiddenToTray: subscribeToChannel('window:hidden-to-tray'),
   onDownloadsChanged: subscribeToChannel('downloads:changed'),
   onUserDataSaveFailed: subscribeToChannel('user-data:save-failed'),
+  onUpdateStateChanged: subscribeToChannel('updates:changed'),
 });

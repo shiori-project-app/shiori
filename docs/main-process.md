@@ -13,6 +13,7 @@
 - `appIcon.js` exports `APP_ICON_FILE`, the path of the icon used by the window, tray and launcher entry.
 - `linuxLauncherEntry.js` exports `refreshLauncherEntry`, which gives the AppImage and tar.gz a launcher entry and icon. See [linux.md](linux.md).
 - `contextMenu.js` builds the right-click menu. `contextMenuTemplate(params, webContents)` offers spelling fixes and editing in text boxes, copy, link and image actions on page content, and Back and Forward everywhere else.
+- `windowMessages.js` exports `sendToAllWindows(channel, ...payload)`, which sends an event to every open window.
 - `webUrls.js` exports `isWebUrl`, which ensures only `http(s)` addresses open in the browser.
 - `fileSystem.js` exports `folderUsage` (recursive bytes and files) and `writeFileAtomically` / `writeFileAtomicallyAsync`. Use the atomic writers for every JSON state file. They write a temporary file and rename it, briefly retry a locked target, and remove the temporary file on failure.
 - `logger.js` exports `logInfo` and `logError`, which write to `<userData>/logs/main.log` (rotated at 1 MB). It also logs unhandled errors.
@@ -37,6 +38,7 @@
   - It manages the move folder (`cleanupMoveFolder`), which is set only through its native dialog and can never be inside the download folder.
   - `cleanUpFile` sends one finished video file to the Recycle Bin (Trash on Linux) or the move folder. It refuses paths outside the download folder, non-video files and files still queued.
   - Moves never overwrite. Across drives, a move copies the file, checks its size, then removes the original.
+- `updates.js` runs auto-update with `electron-updater`: a check on every launch, repeat and manual checks, downloading, installing, and sending the current state to the page. See [releasing.md](releasing.md).
 - `backup.js` shows the save and open dialogs for backups and exports, and makes an automatic backup before a restore, keeping 10.
 - `paths.js` exports `downloadsRoot`, `resolveDownloadPath` (which keeps paths inside the download folder) and `showFolder`.
 
@@ -60,3 +62,4 @@
 - `fileNames.js` exports `withoutUnsafeNameEnding` and `safeName`, which makes names valid on Windows on every platform: no forbidden characters, never only dots, no trailing dots or spaces, and at most `MAX_NAME_LENGTH`.
 - `videoFiles.js` exports `VIDEO_EXTENSIONS` and `isVideoFileName`.
 - `platformNames.js` exports `trashNameOn(platform)`, which returns Recycle Bin or Trash.
+- `updatePhases.js` exports `UPDATE_PHASES`, the states of an app update.

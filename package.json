@@ -13,14 +13,17 @@
     "check": "vp check",
     "test": "vp test run",
     "start": "vp build && electron .",
-    "dist": "vp build && electron-builder",
-    "dist:linux": "vp build && electron-builder --linux",
-    "dist:win": "vp build && electron-builder --win",
-    "dist:arch": "vp build && electron-builder --linux pacman --x64",
-    "dist:debian": "vp build && electron-builder --linux deb --x64 --arm64",
-    "dist:fedora": "vp build && electron-builder --linux rpm --x64 --arm64",
-    "dist:appimage": "vp build && electron-builder --linux AppImage --x64 --arm64",
-    "dist:portable": "vp build && electron-builder --linux tar.gz --x64 --arm64"
+    "dist": "vp build && electron-builder --publish never",
+    "dist:linux": "vp build && electron-builder --linux --publish never",
+    "dist:win": "vp build && electron-builder --win --publish never",
+    "dist:arch": "vp build && electron-builder --linux pacman --x64 --publish never",
+    "dist:debian": "vp build && electron-builder --linux deb --x64 --arm64 --publish never",
+    "dist:fedora": "vp build && electron-builder --linux rpm --x64 --arm64 --publish never",
+    "dist:appimage": "vp build && electron-builder --linux AppImage --x64 --arm64 --publish never",
+    "dist:portable": "vp build && electron-builder --linux tar.gz --x64 --arm64 --publish never"
+  },
+  "dependencies": {
+    "electron-updater": "^6.8.11"
   },
   "devDependencies": {
     "@fontsource/chakra-petch": "^5.3.0",
@@ -75,7 +78,8 @@
       "runAfterFinish": true,
       "deleteAppDataOnUninstall": false,
       "include": "build/installer.nsh",
-      "installerSidebar": "build/installerSidebar.bmp"
+      "installerSidebar": "build/installerSidebar.bmp",
+      "artifactName": "Shiori-Setup-${version}.${ext}"
     },
     "toolsets": {
       "appimage": "1.0.3"
@@ -175,6 +179,11 @@
         "libcups",
         "alsa-lib"
       ]
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "shiori-project-app",
+      "repo": "shiori"
     }
   },
   "desktopName": "shiori.desktop",

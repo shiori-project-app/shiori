@@ -1,15 +1,15 @@
 import path from 'node:path';
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, ipcMain } from 'electron';
 import { pickFileKeys, USER_DATA_FILE_NAMES, userDataFileForKey } from '../../shared/userDataFiles.js';
 import { logError } from '../logger.js';
 import { createUserDataFile, LOAD_STATUS } from '../userDataFile.js';
+import { sendToAllWindows } from '../windowMessages.js';
 
 const SAVE_DELAY_MS = 1000;
 
 const dataFolder = () => path.join(app.getPath('userData'), 'data');
 
-const notifyWindowsOfSaveFailure = (fileName) =>
-  BrowserWindow.getAllWindows().forEach((window) => window.webContents.send('user-data:save-failed', fileName));
+const notifyWindowsOfSaveFailure = (fileName) => sendToAllWindows('user-data:save-failed', fileName);
 
 const reportSaveFailure = (fileName) => (error) => {
   logError(`Could not save ${fileName}.json`, error);

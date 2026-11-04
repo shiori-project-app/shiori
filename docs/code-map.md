@@ -4,7 +4,7 @@
 - `electron/preload.cjs` exposes `window.shiori` to the page. It must stay CommonJS because the preload is sandboxed.
 - `shared/` holds plain ES modules used by both processes. The page imports them as `@shared/...`.
 - `src/main.jsx` applies the saved theme, then renders `App`.
-- `src/app/` holds `App` (the router), `AppProviders` (the context stack), `AppRoutes`, `UserDataGate` (shows a startup screen until user data has loaded) and `OfflineSync` (runs the offline library sync).
+- `src/app/` holds `App` (the router), `AppProviders` (the context stack), `AppRoutes`, `UserDataGate` (shows a startup screen until user data has loaded), `OfflineSync` (runs the offline library sync) and `UpdateNotifier` (shows a toast when an update is available or ready).
 - `src/api/` holds the data layer: raw AniList, Jikan and desktop calls in `clients/`, AniList GraphQL strings in `queries/`, conversions to app shapes in `mappers/`, and domain logic in `services/`. See [api.md](api.md).
 - `src/context/` holds the context providers, each with a `useX` hook. See [contexts.md](contexts.md).
 - `src/hooks/` holds stateful logic. See [hooks/](hooks/).
@@ -19,4 +19,5 @@
   - `installer.nsh` customizes the installer's Welcome and Finish pages. The Finish page offers Run Shiori and a desktop shortcut checkbox that removes the shortcut when unticked. Functions that read `$mui.FinishPage.*` must come after `MUI_PAGE_FINISH`.
 - `build.nsis` in `package.json` configures the Windows installer: a wizard (`oneClick: false`), per-user or all-users installs, a choosable folder, shortcuts and run after finish. App data, including the default download folder, is kept on uninstall.
 - `.github/dependabot.yml` has Dependabot check npm packages weekly, grouping minor and patch updates into one pull request.
+- `build.publish` in `package.json` points auto-update at this repo's GitHub Releases. See [releasing.md](releasing.md).
 - `tests/` mirrors the source tree. `tests/electron/` runs in Node with the `electron` module mocked, and `tests/fixtures/` holds saved HTML and RSS samples for the scraper parsers.

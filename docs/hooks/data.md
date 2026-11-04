@@ -27,6 +27,7 @@
 - `useSearchSuggestions(query)` returns debounced title suggestions for 2 or more characters.
 - `useOnlineStatus()` exposes `navigator.onLine` as state.
 - `useOfflineSync()` triggers the offline library sync. `app/OfflineSync` mounts it once.
+- `useAppUpdate()` returns the app update state (`phase`, `currentVersion`, `availableVersion`, `downloadPercent`), or null until it has loaded, and follows changes from the main process.
 - `useShareSeriesLink(id)` copies the AniList URL and shows the result as a toast.
 
 ## URL state
