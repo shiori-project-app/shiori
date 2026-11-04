@@ -1,0 +1,135 @@
+@use '../abstracts' as *;
+
+:root {
+  --header-height: 64px;
+
+  @include below(md) {
+    --header-height: 108px;
+  }
+}
+
+.header {
+  position: fixed;
+  inset: 0 0 auto 0;
+  height: var(--header-height);
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  padding: 0 28px;
+  z-index: $z-header;
+  background: linear-gradient(rgb(var(--bg-rgb) / 0.96), rgb(var(--bg-rgb) / 0.82));
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border);
+
+  @include below(md) {
+    height: auto;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 8px 16px 6px;
+  }
+
+  &__random {
+    @include below(md) {
+      display: none;
+    }
+  }
+
+  &__settings {
+    flex: none;
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    border-radius: $radius-circle;
+    color: var(--muted);
+
+    &:hover {
+      color: var(--text);
+      background: var(--surface2);
+    }
+
+    &.is-active {
+      color: var(--on-accent);
+      background: var(--accent);
+    }
+  }
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--display);
+  font-weight: var(--display-weight);
+  font-size: $font-4xl;
+  letter-spacing: 0.04em;
+
+  svg {
+    width: 26px;
+    height: 36px;
+  }
+
+  &__ribbon {
+    fill: $brand-vermilion;
+  }
+
+  &__torii {
+    fill: $brand-washi;
+  }
+
+  span {
+    @include below(sm) {
+      display: none;
+    }
+  }
+}
+
+.nav {
+  display: flex;
+  gap: 4px;
+
+  @include below(md) {
+    order: 5;
+    width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  &__link {
+    flex: none;
+    white-space: nowrap;
+    padding: 8px 14px;
+    border-radius: $radius-pill;
+    font-weight: $weight-bold;
+    color: var(--muted);
+
+    &:hover {
+      color: var(--text);
+      background: var(--surface2);
+    }
+
+    &.is-active {
+      color: var(--on-accent);
+      background: var(--accent);
+    }
+  }
+
+  &__badge {
+    display: inline-grid;
+    place-items: center;
+    min-width: 18px;
+    height: 18px;
+    margin-left: 6px;
+    padding: 0 5px;
+    border-radius: $radius-pill;
+    background: var(--gold);
+    color: $ink;
+    @include font-xs-extrabold;
+  }
+
+  &__badge-count {
+    display: block;
+    line-height: 1;
+    text-box: trim-both cap alphabetic;
+  }
+}

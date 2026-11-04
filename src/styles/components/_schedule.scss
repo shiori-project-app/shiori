@@ -1,0 +1,148 @@
+@use '../abstracts' as *;
+
+.schedule {
+  &__bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    .scroll-row {
+      flex: 1;
+      min-width: 0;
+      margin-bottom: 0;
+    }
+  }
+
+  &__days {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 2px;
+    @include hide-scrollbar;
+  }
+
+  &__day {
+    flex: 1 0 92px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 8px 12px;
+    border-radius: $radius-xl;
+    background: var(--surface);
+    border: 1px solid var(--border);
+
+    b {
+      font-weight: $weight-extrabold;
+    }
+
+    small {
+      color: var(--muted);
+      @include font-sm-bold;
+    }
+
+    &:hover {
+      border-color: var(--accent);
+    }
+
+    &.is-active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--on-accent);
+
+      small {
+        color: inherit;
+        opacity: 0.85;
+      }
+    }
+  }
+
+  &__zone {
+    margin: 10px 0 14px;
+    color: var(--muted);
+    @include font-md-semibold;
+  }
+
+  &__list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 1fr));
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 14px;
+    border-radius: $radius-xl;
+    background: var(--surface);
+    border: 1px solid var(--border);
+
+    &.is-aired {
+      opacity: 0.6;
+    }
+  }
+
+  &__time {
+    flex: none;
+    min-width: 64px;
+    white-space: nowrap;
+    color: var(--accent);
+    font-weight: $weight-extrabold;
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__thumb {
+    --frame-radius: #{$radius-md};
+    flex: none;
+    width: 40px;
+  }
+
+  &__info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__title {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    @include font-xl-extrabold;
+
+    &:hover {
+      color: var(--accent);
+    }
+  }
+
+  &__meta {
+    margin: 2px 0 0;
+    color: var(--muted);
+    @include font-md-semibold;
+  }
+
+  &__ep {
+    flex: none;
+    padding: 3px 10px;
+    border-radius: $radius-pill;
+    background: var(--surface2);
+    @include font-md-extrabold;
+  }
+
+  &__note {
+    color: var(--muted);
+    font-weight: $weight-semibold;
+  }
+
+  &__skeleton {
+    height: 280px;
+    aspect-ratio: auto;
+  }
+
+  &__more {
+    margin-top: 14px;
+  }
+}

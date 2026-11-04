@@ -1,0 +1,76 @@
+@use '../abstracts' as *;
+
+.link-files {
+  max-height: calc(100vh - 220px);
+  overflow-y: auto;
+  padding-right: 8px;
+
+  > section {
+    width: 100%;
+  }
+
+  &__heading {
+    margin: 14px 0 6px;
+    color: var(--muted);
+    @include font-md-extrabold;
+  }
+
+  &__list {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  &__row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: $radius-card;
+    background: var(--surface2);
+
+    .btn {
+      flex: none;
+    }
+  }
+
+  &__name {
+    flex: 1;
+    min-width: 0;
+    display: grid;
+    gap: 1px;
+
+    b,
+    small {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    b {
+      @include font-lg-bold;
+    }
+
+    small {
+      color: var(--muted);
+      font-size: $font-sm;
+    }
+  }
+
+  &__episode {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--muted);
+    @include font-md-bold;
+
+    input {
+      width: 68px;
+    }
+  }
+}

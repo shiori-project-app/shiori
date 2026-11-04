@@ -1,0 +1,23 @@
+@use '../abstracts' as *;
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 28px;
+  z-index: $z-toast;
+  max-width: 90vw;
+  padding: 10px 18px;
+  border-radius: $radius-lg;
+  background: var(--text);
+  color: var(--bg);
+  font-weight: $weight-extrabold;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, 30px);
+  transition: 0.25s;
+
+  &.is-visible {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}

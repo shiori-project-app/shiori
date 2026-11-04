@@ -1,0 +1,38 @@
+@use '../abstracts' as *;
+
+@include theme(
+  'cyberpunk',
+  (
+    dark: true,
+    bg: #07070d,
+    surface: #0f1020,
+    surface2: #181a33,
+    border: #26294d,
+    text: #eaf6ff,
+    muted: #8e9cc2,
+    placeholder: #4a5185,
+    thumb: #0b0c18,
+    gold: #f9f002,
+    green: #00ff9f,
+    red: #ff2a6d,
+    accents: (
+      'cyan': #00f0ff,
+      'magenta': #ff2a6d,
+      'yellow': #f9f002,
+      'green': #00ff9f,
+      'purple': #b967ff,
+      'orange': #ff8b1f,
+    ),
+    accent: 'cyan',
+    second: 'magenta',
+    second-alt: 'cyan',
+  )
+);
+
+[data-theme='cyberpunk'] {
+  --display: 'Chakra Petch', 'Nunito', system-ui, sans-serif;
+  --display-weight: 700;
+  --heading-glow: 0 0 18px color-mix(in srgb, var(--accent) 55%, transparent);
+  --button-glow: 0 0 14px color-mix(in srgb, var(--accent) 50%, transparent);
+  --backdrop-grid: color-mix(in srgb, var(--accent) 5%, transparent);
+}

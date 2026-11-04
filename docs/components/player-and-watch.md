@@ -1,0 +1,18 @@
+# Components: player, watch, notes
+
+## `src/components/player/`
+
+- `Player` renders the video element, subtitle overlay, spinner and big play button, and wires up `useVideoPlayer`, `usePlayerHotkeys`, `useAudioTracks`, `useSubtitles`, `useSkipSegments` and `usePlaybackMilestones`. It opens paused unless `usePlayOnOpen` says otherwise.
+- `PlayerControls` holds the seek bar with skip-segment marks, time, volume, speed, tracks, picture-in-picture, theater and fullscreen. It's memoized, and only the seek bar and clock read `VideoTimeContext`, so they alone update on each time tick.
+- `TrackMenu` is the subtitle and audio track menu.
+- `PictureInPictureNote` covers the stage while the video plays in picture-in-picture, with a "Bring it back" button.
+- `SkipSegmentButton` is the "Skip intro" or "Skip ending" button.
+- `EndCard` appears after an episode, offering replay and the next episode with an autoplay countdown, or a download if it isn't available. The countdown and "Play next" open the next episode already playing.
+- `EpisodeUnavailable` offers a download when the episode isn't downloaded.
+- `PlaybackError` shows "Shiori can’t play this file", with open-externally and show-in-folder actions.
+- `PlayerCrashMessage` is the `ErrorBoundary` fallback for the player.
+
+## Others
+
+- `watch/WatchActions` provides mark watched, previous and next episode, share, and show file in folder.
+- `notes/Notes` provides per-episode notes: add, list and delete.

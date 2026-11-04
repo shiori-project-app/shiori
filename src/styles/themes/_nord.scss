@@ -1,0 +1,59 @@
+@use '../abstracts' as *;
+
+$-accents: (
+  'frost': #88c0d0,
+  'sky': #81a1c1,
+  'ocean': #5e81ac,
+  'teal': #8fbcbb,
+  'green': #a3be8c,
+  'yellow': #ebcb8b,
+  'orange': #d08770,
+  'red': #bf616a,
+  'purple': #b48ead,
+);
+
+@include theme(
+  'nord',
+  (
+    dark: true,
+    bg: #2e3440,
+    surface: #3b4252,
+    surface2: #434c5e,
+    border: #434c5e,
+    text: #eceff4,
+    text-soft: #e5e9f0,
+    muted: #a0a8b6,
+    placeholder: #616e88,
+    thumb: #272c36,
+    gold: #ebcb8b,
+    green: #a3be8c,
+    red: #bf616a,
+    accents: $-accents,
+    accent: 'frost',
+    second: 'sky',
+    second-alt: 'purple',
+  )
+);
+
+@include theme(
+  'nord-light',
+  (
+    dark: false,
+    bg: #eceff4,
+    surface: #e5e9f0,
+    surface2: #d8dee9,
+    border: #d8dee9,
+    text: #2e3440,
+    text-soft: #3b4252,
+    muted: #4c566a,
+    placeholder: #8a93a6,
+    thumb: #e5e9f0,
+    gold: #d08770,
+    green: #a3be8c,
+    red: #bf616a,
+    accents: $-accents,
+    accent: 'ocean',
+    second: 'purple',
+    second-alt: 'sky',
+  )
+);

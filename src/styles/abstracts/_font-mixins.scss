@@ -1,0 +1,71 @@
+@use 'variables' as *;
+
+@mixin font-xs-extrabold {
+  font-size: $font-xs;
+  font-weight: $weight-extrabold;
+}
+
+@mixin font-sm-bold {
+  font-size: $font-sm;
+  font-weight: $weight-bold;
+}
+
+@mixin font-sm-extrabold {
+  font-size: $font-sm;
+  font-weight: $weight-extrabold;
+}
+
+@mixin font-md-semibold {
+  font-size: $font-md;
+  font-weight: $weight-semibold;
+}
+
+@mixin font-md-bold {
+  font-size: $font-md;
+  font-weight: $weight-bold;
+}
+
+@mixin font-md-extrabold {
+  font-size: $font-md;
+  font-weight: $weight-extrabold;
+}
+
+@mixin font-lg-medium {
+  font-size: $font-lg;
+  font-weight: $weight-medium;
+}
+
+@mixin font-lg-semibold {
+  font-size: $font-lg;
+  font-weight: $weight-semibold;
+}
+
+@mixin font-lg-bold {
+  font-size: $font-lg;
+  font-weight: $weight-bold;
+}
+
+@mixin font-lg-extrabold {
+  font-size: $font-lg;
+  font-weight: $weight-extrabold;
+}
+
+@mixin font-xl-bold {
+  font-size: $font-xl;
+  font-weight: $weight-bold;
+}
+
+@mixin font-xl-extrabold {
+  font-size: $font-xl;
+  font-weight: $weight-extrabold;
+}
+
+@mixin font-2xl-extrabold {
+  font-size: $font-2xl;
+  font-weight: $weight-extrabold;
+}
+
+@mixin font-3xl-extrabold {
+  font-size: $font-3xl;
+  font-weight: $weight-extrabold;
+}

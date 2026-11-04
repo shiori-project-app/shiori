@@ -1,0 +1,150 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron';
+import { DEFAULT_PARALLEL_DOWNLOADS, UNLIMITED_SPEED, validDownloadSettings } from '../../shared/downloadLimits.js';
+import { writeFileAtomically } from '../fileSystem.js';
+import { desktopHasTray, isLinux, relaunchOptions } from '../linuxDesktop.js';
+import { logError } from '../logger.js';
+import { canOpenAtLogin, opensAtLogin, refreshLoginItem, setOpensAtLogin } from '../loginItem.js';
+
+const SOFTWARE_DRAWING_SWITCH = 'disable-gpu-compositing';
+
+const settingsFile = () => path.join(app.getPath('userData'), 'settings.json');
+
+const appDownloadFolder = () =>
+  isLinux() ? path.join(app.getPath('videos'), 'Shiori') : path.join(app.getPath('userData'), 'Downloads');
+
+export const isAppDownloadFolder = (folder) => path.resolve(folder) === path.resolve(appDownloadFolder());
+
+const previousDefaultDownloadFolder = () => path.join(app.getPath('downloads'), 'Shiori');
+
+const defaultSettings = () => ({
+  downloadDir: appDownloadFolder(),
+  maxParallelDownloads: DEFAULT_PARALLEL_DOWNLOADS,
+  speedLimitKBps: UNLIMITED_SPEED,
+  smoothGraphics: false,
+  cleanupMoveFolder: null,
+  keepRunningInTray: false,
+});
+
+let currentSettings = null;
+let smoothGraphicsAtLaunch = false;
+const changeListeners = new Set();
+
+export const onSettingsChanged = (listener) => changeListeners.add(listener);
+
+const readSettingsFile = () => {
+  if (!fs.existsSync(settingsFile())) return {};
+
+  try {
+    return JSON.parse(fs.readFileSync(settingsFile(), 'utf8'));
+  } catch (error) {
+    logError('Settings file could not be read; using defaults', error);
+
+    return {};
+  }
+};
+
+const keepsPreviousDownloadFolder = (savedSettings) =>
+  !savedSettings.downloadDir && fs.existsSync(previousDefaultDownloadFolder());
+
+const readSavedSettings = () => {
+  const savedSettings = readSettingsFile();
+
+  if (!keepsPreviousDownloadFolder(savedSettings)) return { ...defaultSettings(), ...savedSettings };
+
+  const settingsWithPreviousFolder = {
+    ...defaultSettings(),
+    ...savedSettings,
+    downloadDir: previousDefaultDownloadFolder(),
+  };
+
+  writeFileAtomically(settingsFile(), JSON.stringify(settingsWithPreviousFolder, null, 2));
+
+  return settingsWithPreviousFolder;
+};
+
+export const getSettings = () => {
+  currentSettings ??= readSavedSettings();
+
+  return currentSettings;
+};
+
+const saveSettings = (changes) => {
+  currentSettings = { ...getSettings(), ...changes };
+  writeFileAtomically(settingsFile(), JSON.stringify(currentSettings, null, 2));
+  changeListeners.forEach((listener) => listener(currentSettings));
+
+  return currentSettings;
+};
+
+export const applyGraphicsSettingAtLaunch = () => {
+  smoothGraphicsAtLaunch = getSettings().smoothGraphics === true;
+
+  if (smoothGraphicsAtLaunch) app.commandLine.appendSwitch(SOFTWARE_DRAWING_SWITCH);
+};
+
+export const settingsForPage = (settings) => ({
+  ...settings,
+  smoothGraphicsAtLaunch,
+  platform: process.platform,
+  canKeepRunningInTray: desktopHasTray(),
+  startAtLogin: opensAtLogin(),
+  canStartAtLogin: canOpenAtLogin(),
+});
+
+export const saveCleanupMoveFolder = (folder) => settingsForPage(saveSettings({ cleanupMoveFolder: folder }));
+
+export const updateGraphicsSetting = (changes) =>
+  settingsForPage(saveSettings({ smoothGraphics: changes?.smoothGraphics === true }));
+
+const updateBackgroundSettings = (changes) => {
+  if (typeof changes?.startAtLogin === 'boolean') setOpensAtLogin(changes.startAtLogin);
+
+  const settings =
+    typeof changes?.keepRunningInTray === 'boolean'
+      ? saveSettings({ keepRunningInTray: changes.keepRunningInTray })
+      : getSettings();
+
+  return settingsForPage(settings);
+};
+
+const restartApp = () => {
+  app.relaunch(relaunchOptions());
+  app.quit();
+};
+
+const chooseDownloadFolder = async (event) => {
+  const { canceled, filePaths } = await dialog.showOpenDialog(BrowserWindow.fromWebContents(event.sender), {
+    title: 'Choose where Shiori saves anime',
+    defaultPath: getSettings().downloadDir,
+    properties: ['openDirectory', 'createDirectory'],
+  });
+
+  return canceled ? getSettings() : saveSettings({ downloadDir: filePaths[0] });
+};
+
+const openDownloadFolder = async () => {
+  const downloadFolder = getSettings().downloadDir;
+
+  fs.mkdirSync(downloadFolder, { recursive: true });
+
+  const errorMessage = await shell.openPath(downloadFolder);
+
+  if (errorMessage) throw new Error(errorMessage);
+};
+
+export const registerSettingsHandlers = () => {
+  refreshLoginItem();
+  ipcMain.handle('settings:get', () => settingsForPage(getSettings()));
+  ipcMain.handle('settings:choose-download-dir', async (event) => settingsForPage(await chooseDownloadFolder(event)));
+
+  ipcMain.handle('settings:update-downloads', (_event, changes) =>
+    settingsForPage(saveSettings(validDownloadSettings(changes))),
+  );
+
+  ipcMain.handle('settings:update-graphics', (_event, changes) => updateGraphicsSetting(changes));
+  ipcMain.handle('settings:update-background', (_event, changes) => updateBackgroundSettings(changes));
+  ipcMain.handle('settings:restart', restartApp);
+  ipcMain.handle('settings:open-download-dir', openDownloadFolder);
+};

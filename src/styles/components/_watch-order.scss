@@ -1,0 +1,78 @@
+@use '../abstracts' as *;
+
+.watch-order {
+  &__bar {
+    margin-bottom: 14px;
+  }
+
+  &__hint {
+    color: var(--muted);
+    @include font-md-semibold;
+  }
+
+  &__list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
+    gap: 10px 18px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  &__skeleton {
+    height: 88px;
+    aspect-ratio: auto;
+    border-radius: $radius-xl;
+  }
+
+  &__item {
+    padding: 8px 12px 8px 4px;
+    border: 1px solid transparent;
+    border-radius: $radius-xl;
+
+    .compact-row__rank {
+      color: var(--muted);
+    }
+
+    &.is-current {
+      border-color: var(--accent);
+      background: color-mix(in srgb, var(--accent) 9%, var(--surface));
+
+      .compact-row__rank {
+        color: var(--accent);
+      }
+    }
+  }
+
+  &__label {
+    padding: 1px 8px;
+    border-radius: $radius-pill;
+    background: var(--surface2);
+    color: var(--muted);
+    @include font-xs-extrabold;
+
+    &.is-current {
+      background: var(--accent);
+      color: var(--on-accent);
+    }
+
+    &.is-progress {
+      color: var(--text);
+    }
+  }
+
+  &__more {
+    margin-top: 14px;
+  }
+}
+
+.compact-row__note {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 6px;
+
+  &:empty {
+    display: none;
+  }
+}

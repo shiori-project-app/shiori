@@ -1,0 +1,95 @@
+@use '../abstracts' as *;
+
+@include theme(
+  'kanagawa-wave',
+  (
+    dark: true,
+    bg: #1f1f28,
+    surface: #2a2a37,
+    surface2: #363646,
+    border: #363646,
+    text: #dcd7ba,
+    muted: #938aa9,
+    placeholder: #727169,
+    thumb: #16161d,
+    gold: #e6c384,
+    green: #98bb6c,
+    red: #e46876,
+    accents: (
+      'blue': #7e9cd8,
+      'violet': #957fb8,
+      'sky': #7fb4ca,
+      'aqua': #7aa89f,
+      'green': #98bb6c,
+      'yellow': #e6c384,
+      'orange': #ffa066,
+      'pink': #d27e99,
+      'red': #e46876,
+    ),
+    accent: 'blue',
+    second: 'violet',
+    second-alt: 'sky',
+  )
+);
+
+@include theme(
+  'kanagawa-dragon',
+  (
+    dark: true,
+    bg: #181616,
+    surface: #282727,
+    surface2: #393836,
+    border: #393836,
+    text: #c5c9c5,
+    muted: #a6a69c,
+    placeholder: #737c73,
+    thumb: #12120f,
+    gold: #c4b28a,
+    green: #87a987,
+    red: #c4746e,
+    accents: (
+      'red': #c4746e,
+      'orange': #b6927b,
+      'yellow': #c4b28a,
+      'green': #87a987,
+      'aqua': #8ea4a2,
+      'blue': #8ba4b0,
+      'violet': #8992a7,
+      'pink': #a292a3,
+    ),
+    accent: 'red',
+    second: 'orange',
+    second-alt: 'yellow',
+  )
+);
+
+@include theme(
+  'kanagawa-lotus',
+  (
+    dark: false,
+    bg: #f2ecbc,
+    surface: #e5ddb0,
+    surface2: #dcd5ac,
+    border: #d5cea3,
+    text: #545464,
+    muted: #716e61,
+    placeholder: #8a8980,
+    thumb: #e7dba0,
+    gold: #cc6d00,
+    green: #6f894e,
+    red: #c84053,
+    accents: (
+      'blue': #4d699b,
+      'violet': #624c83,
+      'aqua': #597b75,
+      'green': #6f894e,
+      'yellow': #77713f,
+      'orange': #cc6d00,
+      'pink': #b35b79,
+      'red': #c84053,
+    ),
+    accent: 'blue',
+    second: 'violet',
+    second-alt: 'aqua',
+  )
+);

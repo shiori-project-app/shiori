@@ -1,0 +1,88 @@
+@use '../abstracts' as *;
+
+@include theme(
+  'rose-pine',
+  (
+    dark: true,
+    bg: #191724,
+    surface: #1f1d2e,
+    surface2: #26233a,
+    border: #403d52,
+    text: #e0def4,
+    muted: #908caa,
+    placeholder: #6e6a86,
+    thumb: #21202e,
+    gold: #f6c177,
+    green: #9ccfd8,
+    red: #eb6f92,
+    accents: (
+      'rose': #ebbcba,
+      'love': #eb6f92,
+      'gold': #f6c177,
+      'pine': #31748f,
+      'foam': #9ccfd8,
+      'iris': #c4a7e7,
+    ),
+    accent: 'rose',
+    second: 'iris',
+    second-alt: 'foam',
+  )
+);
+
+@include theme(
+  'rose-pine-moon',
+  (
+    dark: true,
+    bg: #232136,
+    surface: #2a273f,
+    surface2: #393552,
+    border: #44415a,
+    text: #e0def4,
+    muted: #908caa,
+    placeholder: #6e6a86,
+    thumb: #2a283e,
+    gold: #f6c177,
+    green: #9ccfd8,
+    red: #eb6f92,
+    accents: (
+      'rose': #ea9a97,
+      'love': #eb6f92,
+      'gold': #f6c177,
+      'pine': #3e8fb0,
+      'foam': #9ccfd8,
+      'iris': #c4a7e7,
+    ),
+    accent: 'rose',
+    second: 'iris',
+    second-alt: 'foam',
+  )
+);
+
+@include theme(
+  'rose-pine-dawn',
+  (
+    dark: false,
+    bg: #faf4ed,
+    surface: #f2e9e1,
+    surface2: #dfdad9,
+    border: #dfdad9,
+    text: #575279,
+    muted: #797593,
+    placeholder: #9893a5,
+    thumb: #f4ede8,
+    gold: #ea9d34,
+    green: #56949f,
+    red: #b4637a,
+    accents: (
+      'rose': #d7827e,
+      'love': #b4637a,
+      'gold': #ea9d34,
+      'pine': #286983,
+      'foam': #56949f,
+      'iris': #907aa9,
+    ),
+    accent: 'rose',
+    second: 'iris',
+    second-alt: 'foam',
+  )
+);

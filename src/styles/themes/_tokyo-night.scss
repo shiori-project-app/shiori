@@ -1,0 +1,121 @@
+@use '../abstracts' as *;
+
+$-night-accents: (
+  'blue': #7aa2f7,
+  'cyan': #7dcfff,
+  'magenta': #bb9af7,
+  'purple': #9d7cd8,
+  'teal': #1abc9c,
+  'green': #9ece6a,
+  'yellow': #e0af68,
+  'orange': #ff9e64,
+  'red': #f7768e,
+);
+
+@include theme(
+  'tokyo-night',
+  (
+    dark: true,
+    bg: #1a1b26,
+    surface: #292e42,
+    surface2: #3b4261,
+    border: #3b4261,
+    text: #c0caf5,
+    muted: #737aa2,
+    placeholder: #565f89,
+    thumb: #16161e,
+    gold: #e0af68,
+    green: #9ece6a,
+    red: #f7768e,
+    accents: $-night-accents,
+    accent: 'blue',
+    second: 'magenta',
+    second-alt: 'cyan',
+  )
+);
+
+@include theme(
+  'tokyo-storm',
+  (
+    dark: true,
+    bg: #24283b,
+    surface: #2f344d,
+    surface2: #3b4261,
+    border: #3b4261,
+    text: #c0caf5,
+    muted: #737aa2,
+    placeholder: #565f89,
+    thumb: #1f2335,
+    gold: #e0af68,
+    green: #9ece6a,
+    red: #f7768e,
+    accents: $-night-accents,
+    accent: 'blue',
+    second: 'magenta',
+    second-alt: 'cyan',
+  )
+);
+
+@include theme(
+  'tokyo-moon',
+  (
+    dark: true,
+    bg: #222436,
+    surface: #2f334d,
+    surface2: #3b4261,
+    border: #3b4261,
+    text: #c8d3f5,
+    muted: #828bb8,
+    placeholder: #636da6,
+    thumb: #1e2030,
+    gold: #ffc777,
+    green: #c3e88d,
+    red: #ff757f,
+    accents: (
+      'blue': #82aaff,
+      'cyan': #86e1fc,
+      'magenta': #c099ff,
+      'purple': #fca7ea,
+      'teal': #4fd6be,
+      'green': #c3e88d,
+      'yellow': #ffc777,
+      'orange': #ff966c,
+      'red': #ff757f,
+    ),
+    accent: 'blue',
+    second: 'magenta',
+    second-alt: 'cyan',
+  )
+);
+
+@include theme(
+  'tokyo-day',
+  (
+    dark: false,
+    bg: #e1e2e7,
+    surface: #d0d5e3,
+    surface2: #c4c8da,
+    border: #c4c8da,
+    text: #3760bf,
+    muted: #6172b0,
+    placeholder: #848cb5,
+    thumb: #d0d5e3,
+    gold: #8c6c3e,
+    green: #587539,
+    red: #f52a65,
+    accents: (
+      'blue': #2e7de9,
+      'cyan': #007197,
+      'magenta': #9854f1,
+      'purple': #7847bd,
+      'teal': #118c74,
+      'green': #587539,
+      'yellow': #8c6c3e,
+      'orange': #b15c00,
+      'red': #f52a65,
+    ),
+    accent: 'blue',
+    second: 'magenta',
+    second-alt: 'cyan',
+  )
+);

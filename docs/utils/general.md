@@ -1,0 +1,20 @@
+# Utils: general
+
+- `arrays.js` exports `chunk`, `uniqueBy`, `sum`, `takeWhile` and `randomItem`.
+- `async.js` exports `sleep`, `mapSequentially` and `findSequentially`, which you should use for sequential async work instead of loops. `rememberRequest` keeps one shared promise per key and forgets a failed one so it can be retried.
+- `classNames.js` exports `cx(...)`, which joins truthy class names.
+- `format.js` exports `formatDuration`, `formatHours` (one decimal under 10 h), `formatCountdown`, `formatRating`, `formatDateTime`, `formatDate`, `formatBytes`, `pluralize`, `formatTitleCount`, `capitalize` and `todayAsIsoDate`.
+- `http.js` exports `fetchWithTimeout`. Every `fetch` from the page goes through it.
+- `seekCoalescer.js` exports `createSeekCoalescer`, which runs one video seek at a time. While one runs, only the latest target waits, which keeps seek-bar drags and held arrow keys responsive.
+- `rateLimitedQueue.js` exports `createRateLimitedQueue`, with a burst, a per-minute rate, concurrency, `pauseFor` and `matchServerAllowance`, which follows what the server advertises. AniList uses it.
+- `rateLimitHeaders.js` exports `serverAllowance`, which reads the rate and remaining count from `X-RateLimit-*`, and `retryDelayMilliseconds`, which uses `Retry-After` or else `X-RateLimit-Reset`, because CORS hides `Retry-After`.
+- `pagination.js` exports `lastReachablePage` for AniList's page caps, `visiblePageNumbers`, `pageCount`, `clampPage`, `pageSlice` and `localPageInfo`.
+- `browseParams.js` converts Browse filters to and from URL parameters.
+- `contentFilter.js` exports `excludedGenres` (Hentai always, Ecchi when hidden), `isFilteredOut` and `visibleGenres`.
+- `languages.js` exports `languageName(code)` for track menus.
+- `appearance.js` exports `applyAppearance`, which sets `data-theme` and `data-accent` on `<html>`.
+- `motion.js` exports:
+  - `applyReduceMotion`, which sets `data-reduce-motion` on `<html>`. `base/_global.scss` treats it like the system setting: the two loading spinners keep turning, and skeletons pulse instead of shimmering.
+  - `scrollByWidthFraction` for rail arrows, which jumps when motion is reduced.
+  - `systemPrefersReducedMotion` and `subscribeToSystemMotion`.
+- `player.js` exports `resumablePosition`, `playedPercent`, `trackLabel`, `isPlayerControlTarget`, skip button and notice labels, `segmentMarksGradient` for the seek-bar marks, and `describeSegments`.

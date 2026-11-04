@@ -1,0 +1,13 @@
+@use '../abstracts' as *;
+
+.main {
+  padding: calc(var(--header-height) + 24px) 28px 40px;
+  max-width: 1700px;
+  margin: 0 auto;
+  min-height: 100vh;
+
+  @include below(md) {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}

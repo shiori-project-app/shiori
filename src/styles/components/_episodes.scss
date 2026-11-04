@@ -1,0 +1,130 @@
+@use '../abstracts' as *;
+
+.episode-panel__range {
+  flex-shrink: 0;
+  margin-bottom: 14px;
+}
+
+.episode-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+  gap: 14px;
+
+  @include below(lg) {
+    grid-template-columns: 1fr;
+  }
+
+  &--side {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: auto;
+    margin: 0 -6px;
+    padding: 0 6px;
+
+    .episode-row {
+      padding: 6px;
+    }
+
+    .episode-row__link {
+      grid-template-columns: 128px 1fr;
+    }
+
+    .episode-row__title {
+      font-size: $font-lg;
+    }
+
+    .thumb__duration {
+      font-size: $font-xs;
+      bottom: 5px;
+      right: 5px;
+    }
+  }
+}
+
+.episode-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border-radius: $radius-card;
+  background: var(--surface);
+  border: 1px solid var(--border);
+
+  &__link {
+    flex: 1;
+    min-width: 0;
+    text-align: left;
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    align-items: center;
+    gap: 14px;
+
+    @include below(sm) {
+      grid-template-columns: 130px 1fr;
+    }
+  }
+
+  &__downloaded {
+    color: var(--green);
+  }
+
+  &__download {
+    &.is-downloaded {
+      color: var(--green);
+    }
+
+    flex: none;
+    width: 34px;
+    height: 34px;
+    display: grid;
+    place-items: center;
+    border-radius: $radius-circle;
+    color: var(--muted);
+
+    &:hover {
+      color: var(--accent);
+      background: var(--surface2);
+    }
+
+    .icon {
+      width: 18px;
+      height: 18px;
+    }
+  }
+
+  &:hover {
+    border-color: var(--accent);
+  }
+
+  &:hover .thumb__play {
+    opacity: 1;
+  }
+
+  &.is-current {
+    border-color: var(--accent);
+    background: var(--surface2);
+  }
+
+  &.is-watched:not(.is-current) .episode-row__title {
+    color: var(--muted);
+  }
+
+  .thumb {
+    --frame-radius: #{$radius-lg};
+  }
+
+  &__title {
+    margin: 0;
+    @include font-xl-extrabold;
+    line-height: 1.3;
+  }
+
+  &__meta {
+    margin: 2px 0 0;
+    color: var(--muted);
+    @include font-md-semibold;
+  }
+}

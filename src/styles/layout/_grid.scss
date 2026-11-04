@@ -1,0 +1,39 @@
+@use '../abstracts' as *;
+
+.poster-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(172px, 1fr));
+  gap: 26px 18px;
+
+  > .card--poster {
+    @include skip-rendering-offscreen(340px);
+  }
+}
+
+.episode-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 26px 18px;
+}
+
+.rail {
+  display: flex;
+  gap: 18px;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  padding: 6px 2px 14px;
+  @include hide-scrollbar;
+
+  .card {
+    flex: none;
+    scroll-snap-align: start;
+  }
+
+  .card--poster {
+    width: 176px;
+  }
+
+  .card--episode {
+    width: 290px;
+  }
+}

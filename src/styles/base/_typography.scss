@@ -1,0 +1,47 @@
+@use '../abstracts' as *;
+
+.page-title {
+  @include display-heading($font-6xl);
+  margin: 6px 0;
+}
+
+.page-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.page-count {
+  color: var(--muted);
+  font-weight: $weight-bold;
+  margin: 0 0 18px;
+
+  &:empty {
+    display: none;
+  }
+}
+
+.kicker {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  @include font-md-extrabold;
+  color: var(--gold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+
+  .icon {
+    width: 15px;
+    height: 15px;
+  }
+}
+
+.jp-title {
+  font-family: var(--jp);
+  color: var(--muted);
+  @include font-lg-medium;
+  letter-spacing: 0.1em;
+}

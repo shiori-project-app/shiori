@@ -1,0 +1,22 @@
+# Code map
+
+- `electron/` is the main process: the window, IPC handlers (`ipc/`), the download queue (`downloads/`), user data files and logging. See [main-process.md](main-process.md).
+- `electron/preload.cjs` exposes `window.shiori` to the page. It must stay CommonJS because the preload is sandboxed.
+- `shared/` holds plain ES modules used by both processes. The page imports them as `@shared/...`.
+- `src/main.jsx` applies the saved theme, then renders `App`.
+- `src/app/` holds `App` (the router), `AppProviders` (the context stack), `AppRoutes`, `UserDataGate` (shows a startup screen until user data has loaded) and `OfflineSync` (runs the offline library sync).
+- `src/api/` holds the data layer: raw AniList, Jikan and desktop calls in `clients/`, AniList GraphQL strings in `queries/`, conversions to app shapes in `mappers/`, and domain logic in `services/`. See [api.md](api.md).
+- `src/context/` holds the context providers, each with a `useX` hook. See [contexts.md](contexts.md).
+- `src/hooks/` holds stateful logic. See [hooks/](hooks/).
+- `src/utils/` holds pure helpers. See [utils/](utils/).
+- `src/components/<area>/` holds UI pieces and `src/pages/` holds routed pages. See [components/](components/).
+- `src/constants/` holds routes, filters, list statuses, preferences, settings tabs, themes and torrent options.
+- `src/config/app.config.js` holds tunable numbers such as page sizes, timings and limits.
+- `src/styles/` holds SCSS in the 7-1 layout, with themes in `styles/themes/`.
+- `build/` holds packaging assets:
+  - `icon.svg` is the app icon source, rendered to the 512×512 `icon.png`. Its flat brand colours are ink `#16141a`, vermilion `#e5402a` and washi `#f4ede0`.
+  - `installerSidebar.bmp` (164×314) is shown on the installer's Welcome and Finish pages.
+  - `installer.nsh` customizes the installer's Welcome and Finish pages. The Finish page offers Run Shiori and a desktop shortcut checkbox that removes the shortcut when unticked. Functions that read `$mui.FinishPage.*` must come after `MUI_PAGE_FINISH`.
+- `build.nsis` in `package.json` configures the Windows installer: a wizard (`oneClick: false`), per-user or all-users installs, a choosable folder, shortcuts and run after finish. App data, including the default download folder, is kept on uninstall.
+- `.github/dependabot.yml` has Dependabot check npm packages weekly, grouping minor and patch updates into one pull request.
+- `tests/` mirrors the source tree. `tests/electron/` runs in Node with the `electron` module mocked, and `tests/fixtures/` holds saved HTML and RSS samples for the scraper parsers.

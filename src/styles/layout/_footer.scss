@@ -1,0 +1,12 @@
+@use '../abstracts' as *;
+
+.footer {
+  margin-top: 56px;
+  color: var(--muted);
+  font-size: $font-md;
+  text-align: center;
+
+  a {
+    color: var(--accent);
+  }
+}

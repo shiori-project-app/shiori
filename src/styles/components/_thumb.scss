@@ -1,0 +1,241 @@
+@use '../abstracts' as *;
+
+.thumb {
+  @include rounded-frame($radius-card);
+  display: block;
+  background: var(--thumb-bg);
+
+  @at-root button#{&} {
+    width: 100%;
+  }
+
+  &--poster {
+    aspect-ratio: 2 / 3;
+  }
+
+  &--wide {
+    aspect-ratio: 16 / 9;
+  }
+
+  &__badges {
+    position: absolute;
+    left: 8px;
+    top: 8px;
+    z-index: 2;
+    display: flex;
+    gap: 4px;
+  }
+
+  &__rating {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 2px 8px 2px 6px;
+    border-radius: $radius-pill;
+    background: $ink-panel;
+    color: var(--gold);
+    @include font-sm-extrabold;
+
+    .icon {
+      width: 13px;
+      height: 13px;
+    }
+  }
+
+  &__rank {
+    position: absolute;
+    left: 8px;
+    bottom: 8px;
+    z-index: 2;
+    min-width: 28px;
+    height: 28px;
+    padding: 0 7px;
+    display: grid;
+    place-items: center;
+    border-radius: $radius-md;
+    background: $ink-panel;
+    backdrop-filter: blur(6px);
+    border: 1px solid $white-subtle;
+    color: $white;
+    @include font-md-extrabold;
+
+    &--1 {
+      color: var(--gold);
+      border-color: $rank-gold-border;
+    }
+
+    &--2 {
+      color: $rank-silver;
+      border-color: $rank-silver-border;
+    }
+
+    &--3 {
+      color: $rank-bronze;
+      border-color: $rank-bronze-border;
+    }
+  }
+
+  &__play {
+    @include fill-parent;
+    z-index: 3;
+    display: grid;
+    place-items: center;
+    opacity: 0;
+    transition: opacity 0.25s;
+    background: $ink-veil;
+
+    .icon {
+      width: 54px;
+      height: 54px;
+      padding: 15px;
+      border-radius: $radius-circle;
+      background: var(--accent);
+      color: var(--on-accent);
+    }
+  }
+
+  &__play--download .icon {
+    background: $white-bright;
+    color: $ink;
+  }
+
+  &:focus-visible .thumb__play {
+    opacity: 1;
+  }
+
+  &__watched {
+    position: absolute;
+    left: 8px;
+    top: 8px;
+    z-index: 2;
+    width: 24px;
+    height: 24px;
+    display: grid;
+    place-items: center;
+    border-radius: $radius-circle;
+    background: $watched-green;
+    color: $white;
+    box-shadow: $ring-on-artwork;
+
+    .icon {
+      width: 15px;
+      height: 15px;
+      stroke-width: 3.2;
+    }
+  }
+
+  &__duration,
+  &__ep {
+    position: absolute;
+    bottom: 8px;
+    z-index: 2;
+    padding: 2px 8px;
+    border-radius: $radius-sm;
+    @include font-sm-extrabold;
+  }
+
+  &__duration {
+    right: 8px;
+    background: $ink-panel;
+    color: $white;
+  }
+
+  &__status {
+    position: absolute;
+    right: 8px;
+    bottom: 8px;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 2px 8px 2px 7px;
+    border-radius: $radius-pill;
+    background: $ink-panel;
+    color: $white;
+    @include font-xs-extrabold;
+    letter-spacing: 0.02em;
+
+    &::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      border-radius: $radius-circle;
+      background: var(--status-color, $white);
+      box-shadow: $glow-status-dot;
+    }
+
+    &.is-upcoming {
+      --status-color: #{$status-upcoming};
+    }
+
+    &.is-ongoing {
+      --status-color: #{$status-ongoing};
+    }
+
+    &.is-completed {
+      --status-color: #{$status-completed};
+    }
+
+    &.is-hiatus {
+      --status-color: #{$status-hiatus};
+    }
+
+    &.is-cancelled {
+      --status-color: #{$status-cancelled};
+    }
+  }
+
+  &__ep {
+    left: 8px;
+    background: var(--accent);
+    color: var(--on-accent);
+  }
+
+  &__progress {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+    height: 5px;
+    background: $white-soft;
+
+    span {
+      display: block;
+      height: 100%;
+      background: var(--accent);
+    }
+  }
+}
+
+.badge {
+  padding: 2px 7px;
+  border-radius: $radius-sm;
+  background: var(--accent);
+  color: var(--on-accent);
+  @include font-xs-extrabold;
+  letter-spacing: 0.04em;
+}
+
+.is-spoiler {
+  .thumb.has-episode-art .artwork__img {
+    filter: blur(18px);
+    transform: scale(1.15);
+  }
+
+  .spoiler-text {
+    filter: blur(5px);
+    transition: filter 0.2s;
+  }
+
+  &:hover {
+    .thumb.has-episode-art .artwork__img,
+    .spoiler-text {
+      filter: none;
+    }
+  }
+}

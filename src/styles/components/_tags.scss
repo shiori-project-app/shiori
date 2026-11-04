@@ -1,0 +1,32 @@
+@use '../abstracts' as *;
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.tag {
+  padding: 3px 12px;
+  border-radius: $radius-pill;
+  border: 1px solid rgb(var(--text-rgb) / 0.28);
+  background: rgb(var(--text-rgb) / 0.07);
+  @include font-md-bold;
+}
+
+button.tag:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.tag-pill {
+  flex: none;
+  padding: 1px 6px;
+  border-radius: $radius-sm;
+  background: var(--surface2);
+  color: rgb(var(--text-rgb) / 0.72);
+  @include font-xs-extrabold;
+  line-height: 1.55;
+  letter-spacing: 0.02em;
+}

@@ -1,0 +1,86 @@
+@use '../abstracts' as *;
+
+.search {
+  position: relative;
+  flex: 1;
+  max-width: 460px;
+  margin-left: auto;
+
+  @include below(md) {
+    margin-left: 0;
+    max-width: none;
+  }
+
+  &__form {
+    display: flex;
+    align-items: center;
+    height: 42px;
+    padding: 0 6px 0 16px;
+    border: 1px solid var(--border);
+    border-radius: $radius-pill;
+    background: var(--surface);
+
+    &:focus-within {
+      border-color: var(--accent);
+    }
+  }
+
+  &__input {
+    flex: 1;
+    min-width: 0;
+    height: 40px;
+    background: none;
+    border: 0;
+    outline: 0;
+
+    &::placeholder {
+      color: var(--muted);
+    }
+  }
+
+  &__submit {
+    width: 34px;
+    height: 34px;
+    border-radius: $radius-circle;
+    display: grid;
+    place-items: center;
+    color: var(--muted);
+
+    &:hover {
+      color: var(--accent);
+    }
+  }
+
+  &__suggestions {
+    position: absolute;
+    top: 50px;
+    left: 0;
+    right: 0;
+    padding: 6px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: $radius-card;
+    box-shadow: $shadow-menu;
+  }
+
+  &__suggestion {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    width: 100%;
+    padding: 9px 12px;
+    border-radius: $radius-md;
+    text-align: left;
+
+    &:hover,
+    &:focus-visible {
+      background: var(--surface2);
+    }
+
+    .icon {
+      width: 18px;
+      height: 18px;
+      color: var(--muted);
+    }
+  }
+}

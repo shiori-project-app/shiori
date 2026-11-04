@@ -1,0 +1,71 @@
+@use 'sass:map';
+@use 'variables' as *;
+
+@mixin below($name) {
+  @media (max-width: map.get($breakpoints, $name)) {
+    @content;
+  }
+}
+
+@mixin line-clamp($lines) {
+  display: -webkit-box;
+  -webkit-line-clamp: $lines;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+@mixin hide-scrollbar {
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@mixin fill-parent {
+  position: absolute;
+  inset: 0;
+}
+
+@mixin inside-rounded-frame {
+  inset: 1px;
+  border-radius: calc(var(--frame-radius) - 1px);
+}
+
+@mixin rounded-frame($radius) {
+  --frame-radius: #{$radius};
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  border-radius: var(--frame-radius);
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    border: 1px solid var(--frame-border, var(--border));
+    border-radius: inherit;
+    pointer-events: none;
+  }
+
+  .artwork {
+    @include inside-rounded-frame;
+  }
+}
+
+@mixin display-heading($size) {
+  font-family: var(--display);
+  font-weight: var(--display-weight);
+  font-size: $size;
+  text-shadow: var(--heading-glow, none);
+}
+
+@mixin skip-rendering-offscreen($estimated-height) {
+  content-visibility: auto;
+  contain-intrinsic-size: auto $estimated-height;
+
+  &:focus-within {
+    content-visibility: visible;
+  }
+}

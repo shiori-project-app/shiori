@@ -1,0 +1,32 @@
+@use '../abstracts' as *;
+
+@include theme(
+  'dark',
+  (
+    dark: true,
+    bg: #0e0e11,
+    surface: #17171b,
+    surface2: #222228,
+    border: #2c2c33,
+    text: #f1f1f4,
+    muted: #a1a1aa,
+    placeholder: #5c5c66,
+    thumb: #131316,
+    gold: #fbbf24,
+    green: #4ade80,
+    red: #f87171,
+    accents: (
+      'violet': #a78bfa,
+      'blue': #60a5fa,
+      'pink': #f472b6,
+      'teal': #2dd4bf,
+      'green': #4ade80,
+      'amber': #fbbf24,
+      'orange': #fb923c,
+      'red': #f87171,
+    ),
+    accent: 'violet',
+    second: 'pink',
+    second-alt: 'blue',
+  )
+);

@@ -1,0 +1,31 @@
+@use '../abstracts' as *;
+
+@include theme(
+  'dracula',
+  (
+    dark: true,
+    bg: #282a36,
+    surface: #343746,
+    surface2: #44475a,
+    border: #44475a,
+    text: #f8f8f2,
+    muted: #adb5cb,
+    placeholder: #6272a4,
+    thumb: #21222c,
+    gold: #ffb86c,
+    green: #50fa7b,
+    red: #ff5555,
+    accents: (
+      'purple': #bd93f9,
+      'pink': #ff79c6,
+      'cyan': #8be9fd,
+      'green': #50fa7b,
+      'yellow': #f1fa8c,
+      'orange': #ffb86c,
+      'red': #ff5555,
+    ),
+    accent: 'purple',
+    second: 'pink',
+    second-alt: 'cyan',
+  )
+);

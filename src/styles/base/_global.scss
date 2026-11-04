@@ -1,0 +1,42 @@
+@use '../abstracts' as *;
+
+body {
+  background:
+    radial-gradient(1200px 600px at 85% -10%, color-mix(in srgb, var(--accent2) 18%, transparent), transparent 60%),
+    radial-gradient(900px 500px at -10% 10%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 60%),
+    linear-gradient(var(--backdrop-grid, transparent) 1px, transparent 1px) 0 0 / 100% 48px,
+    linear-gradient(90deg, var(--backdrop-grid, transparent) 1px, transparent 1px) 0 0 / 48px 100%,
+    var(--bg);
+  background-attachment: fixed;
+  color: var(--text);
+  font-family: var(--body);
+  font-size: $font-xl;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@mixin without-motion {
+  *:not(.player__spinner, .startup-screen__spinner, .skeleton),
+  ::before,
+  ::after {
+    transition: none !important;
+    animation: none !important;
+  }
+
+  .skeleton {
+    animation: skeleton-pulse 1.6s ease-in-out infinite alternate !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @include without-motion;
+}
+
+:root[data-reduce-motion] {
+  @include without-motion;
+}

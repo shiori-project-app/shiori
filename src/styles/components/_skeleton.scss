@@ -1,0 +1,41 @@
+@use '../abstracts' as *;
+
+.skeleton {
+  aspect-ratio: 2 / 3;
+  border-radius: $radius-card;
+  background: linear-gradient(90deg, var(--surface), var(--surface2), var(--surface));
+  background-size: 200% 100%;
+  animation: shimmer 1.3s linear infinite;
+
+  &--hero {
+    height: $hero-height;
+    aspect-ratio: auto;
+    border-radius: $radius-hero;
+  }
+
+  &--panel,
+  &--mini-list,
+  &--schedule {
+    aspect-ratio: auto;
+    border-radius: $radius-panel;
+  }
+
+  &--panel {
+    height: 860px;
+    margin-top: 44px;
+  }
+
+  &--mini-list {
+    height: 480px;
+  }
+
+  &--schedule {
+    height: 420px;
+  }
+
+  &--season-card {
+    height: 250px;
+    aspect-ratio: auto;
+    border-radius: $radius-panel;
+  }
+}

@@ -1,0 +1,13 @@
+# Hooks: player
+
+- `useVideoPlayer(videoRef, startAt)` returns `{ time, player }`. `player` holds the `<video>` state (duration, playing, waiting, ended, rate, error) and controls, and stays the same object while only `time` moves. Volume and mute are saved as `player-volume`, and `timeRef` and `durationRef` are available to handlers. Seeks go through `createSeekCoalescer`.
+- `usePlaybackMilestones({ episodeId, player, time, onStarted, onWatched })` fires `onStarted` once and `onWatched` at 90% or at the end. It saves resume progress every 15 s while playing, on pause and on unmount, but never before the duration is known.
+- `usePlayOnOpen(play)` starts playback when the route was opened with `PLAY_ON_OPEN` state (`constants/routes.js`), then clears that state so Back doesn't restart it. Episodes otherwise open paused.
+- `usePauseWhenHiddenToTray(videoRef, pause)` pauses when the window closes to the tray, unless the video is in picture-in-picture.
+- `usePlayerHotkeys(player)` adds keyboard shortcuts and ignores keys that belong to focused controls. Space or k toggles playback, j and l seek ±10 s, arrows seek ±5 s and change volume, 0–9 jump to tenths of the video, and p toggles picture-in-picture.
+- `useAudioTracks(videoRef)` lists and switches audio tracks, and remembers the preferred language (`player-audio-language`).
+- `useSubtitles(file, videoRef, overlayRef)` loads embedded subtitles through `getSubtitles` and picks the default from the saved preference (`player-subtitles`). It renders ASS with the ASS renderer and plain cues as a text track. `toggle`, used by the hotkey, brings back the preferred track. Files without subtitles leave the preference alone.
+- `useSkipSegments({ malId, episode, duration, time, playing, seek, auto })` provides AniSkip intro and ending segments, the current segment, the skip action, auto-skip and the "skipped" notice.
+- `usePictureInPicture(videoRef)` returns `{ isSupported, isActive, toggle }`. It leaves fullscreen first, and closes picture-in-picture when the player unmounts.
+- `useFullscreen(elementRef)` returns a fullscreen toggle. The file also exports an `exitFullscreen()` helper.
+- `useIdle(ms)` returns `[isIdle, markActive]`, used for hiding controls.

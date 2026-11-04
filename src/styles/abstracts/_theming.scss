@@ -1,0 +1,80 @@
+@use 'sass:color';
+@use 'sass:map';
+
+@function channels($color) {
+  @return #{color.channel($color, 'red', $space: rgb)} #{color.channel($color, 'green', $space: rgb)}
+    #{color.channel($color, 'blue', $space: rgb)};
+}
+
+@function readable-on($accent, $dark-ink, $light-ink) {
+  @if color.channel($accent, 'lightness', $space: oklch) > 68% {
+    @return $dark-ink;
+  }
+
+  @return $light-ink;
+}
+
+@mixin -accent-vars($palette, $name) {
+  $accents: map.get($palette, accents);
+  $second: map.get($palette, second);
+
+  @if $name == $second {
+    $second: map.get($palette, second-alt);
+  }
+
+  $dark-ink: map.get($palette, text);
+  $light-ink: map.get($palette, bg);
+
+  @if map.get($palette, dark) {
+    $dark-ink: map.get($palette, bg);
+    $light-ink: map.get($palette, text);
+  }
+
+  $on: readable-on(map.get($accents, $name), $dark-ink, $light-ink);
+
+  --accent: #{map.get($accents, $name)};
+  --accent2: #{map.get($accents, $second)};
+  --on-accent: #{$on};
+}
+
+@mixin theme($id, $palette) {
+  $text: map.get($palette, text);
+
+  [data-theme='#{$id}'] {
+    @if map.get($palette, dark) {
+      color-scheme: dark;
+      --shadow: rgb(0 0 0 / 0.45);
+    } @else {
+      color-scheme: light;
+      --shadow: rgb(#{channels($text)} / 0.2);
+    }
+
+    --bg: #{map.get($palette, bg)};
+    --surface: #{map.get($palette, surface)};
+    --surface2: #{map.get($palette, surface2)};
+    --border: #{map.get($palette, border)};
+    --text: #{$text};
+    --text-soft: #{map.get($palette, text-soft) or color.mix($text, map.get($palette, muted), 70%)};
+    --muted: #{map.get($palette, muted)};
+
+    --gold: #{map.get($palette, gold)};
+    --green: #{map.get($palette, green)};
+    --red: #{map.get($palette, red)};
+
+    --thumb-bg: #{map.get($palette, thumb)};
+    --placeholder-from: #{map.get($palette, surface)};
+    --placeholder-to: #{map.get($palette, thumb)};
+    --placeholder-text: #{map.get($palette, placeholder)};
+
+    --bg-rgb: #{channels(map.get($palette, bg))};
+    --text-rgb: #{channels($text)};
+
+    @include -accent-vars($palette, map.get($palette, accent));
+  }
+
+  @each $name, $value in map.get($palette, accents) {
+    [data-theme='#{$id}'][data-accent='#{$name}'] {
+      @include -accent-vars($palette, $name);
+    }
+  }
+}

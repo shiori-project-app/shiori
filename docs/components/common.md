@@ -1,0 +1,21 @@
+# Components: common (`src/components/common/`)
+
+- `Artwork` is an image with a "No image" placeholder and a fade-in on load.
+- `Backdrop` shows a series' banner behind a card, fading out to the left and bottom so text stays readable. It falls back to a blurred cover when there's no banner, as with upcoming shows and offline copies. The fade is a `mask-image` and the rounding a `clip-path` (`--backdrop-radius`), because a dark overlay on a rounded image leaves a light ring at the corners under Windows display scaling.
+- `Deferred` renders `children` once near the viewport, and `fallback` until then.
+- `EmptyState` shows a centred title, text and an optional action.
+- `ErrorBoundary` is the one allowed class component and resets on `resetKey`. `PageCrashMessage` is its default fallback.
+- `Icon` renders an inline SVG by `name`.
+- `LoadError` shows "Couldn’t load data", or "You’re offline", with a Retry button.
+- `Modal` is a dialog with a title, subtitle and close button. `dismissible={false}` blocks Esc, the backdrop and the close button while work that can't be stopped is running.
+- `OfflineNotice` shows "You’re offline" with links to My List and Downloads. `OnlineOnly` shows it instead of `children` while offline.
+- `Pager` renders page buttons with gaps, from `pageInfo`.
+- `ScrollRow` is a horizontal rail with arrows, using `useHorizontalScroll`.
+- `SegmentedControl` is a radio group with arrow-key selection.
+- `Select` is a custom popover dropdown, using `useSelectMenu`.
+- `Skeleton` exports `SkeletonGrid(count)` and `HeroSkeleton`.
+- `Switch` is a toggle switch.
+- `Tabs` is a tab bar with arrow-key selection. `tabElementId` links tabs to panels.
+- `Tags` is a tag list, clickable when `onSelect` is given.
+- `Toast` is the toast element, shown by `ToastProvider`.
+- `WatchedBadge` is the "watched" badge on cards.

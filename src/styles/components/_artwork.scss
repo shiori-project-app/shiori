@@ -1,0 +1,56 @@
+@use '../abstracts' as *;
+
+.artwork {
+  @include fill-parent;
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+.artwork__placeholder {
+  @include fill-parent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: linear-gradient(160deg, var(--placeholder-from), var(--placeholder-to));
+  color: var(--placeholder-text);
+  @include font-sm-bold;
+  letter-spacing: 0.04em;
+
+  .icon {
+    width: 34px;
+    height: 34px;
+    opacity: 0.55;
+  }
+
+  span {
+    display: none;
+  }
+
+  &.is-missing span {
+    display: block;
+  }
+
+  &.is-plain .icon,
+  &.is-plain span {
+    display: none;
+  }
+}
+
+.artwork__img {
+  @include fill-parent;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  opacity: 0;
+  transition:
+    opacity 0.35s,
+    transform 0.5s;
+
+  &.is-loaded {
+    opacity: 1;
+  }
+}

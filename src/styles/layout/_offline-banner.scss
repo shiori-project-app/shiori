@@ -1,0 +1,25 @@
+@use '../abstracts' as *;
+
+.offline-banner {
+  position: sticky;
+  top: calc(var(--header-height) + 8px);
+  z-index: $z-header - 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  padding: 10px 16px;
+  border: 1px solid rgb(var(--text-rgb) / 0.12);
+  border-radius: $radius-lg;
+  background: var(--surface2);
+  color: var(--muted);
+
+  b {
+    color: var(--gold);
+  }
+
+  .icon {
+    flex: none;
+    color: var(--gold);
+  }
+}

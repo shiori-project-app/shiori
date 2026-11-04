@@ -1,0 +1,52 @@
+@use '../abstracts' as *;
+
+.card {
+  &:hover .thumb {
+    --frame-border: var(--accent);
+  }
+
+  &:hover .thumb__play {
+    opacity: 1;
+  }
+
+  &:hover .artwork__img {
+    transform: scale(1.06);
+  }
+
+  &__title-link {
+    font-weight: inherit;
+    text-align: left;
+
+    &:hover {
+      color: var(--accent);
+    }
+  }
+
+  &__title {
+    margin: 10px 0 2px;
+    @include font-xl-extrabold;
+    line-height: 1.3;
+    @include line-clamp(2);
+
+    a:hover {
+      color: var(--accent);
+    }
+  }
+
+  &__meta {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin: 0;
+    color: var(--muted);
+    @include font-md-semibold;
+    white-space: nowrap;
+  }
+
+  &__detail {
+    min-width: 0;
+    margin-left: 2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}

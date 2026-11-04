@@ -1,0 +1,112 @@
+@use '../abstracts' as *;
+
+$episodes-column-width: 400px;
+$column-gap: 26px;
+
+.main:has(> .watch) {
+  max-width: none;
+}
+
+.watch {
+  --space-below-video: 178px;
+  --tallest-video: calc(100vh - var(--header-height) - 20px - var(--space-below-video));
+  --episodes-column-space: #{$episodes-column-width + $column-gap};
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) $episodes-column-width;
+  gap: $column-gap;
+  max-width: calc(var(--tallest-video) * 16 / 9 + var(--episodes-column-space));
+  margin: -4px auto 0;
+
+  @include below(lg) {
+    --episodes-column-space: 0px;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  &--theater {
+    --space-below-video: 20px;
+    --episodes-column-space: 0px;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  &__title {
+    @include display-heading($font-5xl);
+    line-height: 1.2;
+    margin: 18px 0 0;
+  }
+
+  &__episode {
+    margin: 6px 0 0;
+    color: var(--text);
+    @include font-3xl-extrabold;
+
+    &:empty {
+      display: none;
+    }
+  }
+
+  &__sub {
+    margin: 4px 0 14px;
+    color: var(--muted);
+    font-weight: $weight-bold;
+
+    a {
+      color: var(--accent);
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  &__synopsis {
+    margin: 18px 0;
+    padding: 14px 18px;
+    border-radius: $radius-card;
+    background: var(--surface);
+    border: 1px solid var(--border);
+
+    .tags {
+      margin: 0;
+    }
+
+    p {
+      margin: 6px 0 0;
+      color: var(--text-soft);
+    }
+  }
+
+  &__side {
+    position: sticky;
+    top: calc(var(--header-height) + 16px);
+    display: flex;
+    flex-direction: column;
+    align-self: start;
+    max-height: calc(100vh - var(--header-height) - 56px);
+    padding: 16px;
+    border-radius: $radius-panel;
+    background: var(--surface);
+    border: 1px solid var(--border);
+
+    @include below(lg) {
+      position: static;
+      max-height: none;
+    }
+  }
+
+  &__side-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  &__side-title {
+    @include display-heading($font-3xl);
+  }
+}

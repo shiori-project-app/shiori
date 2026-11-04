@@ -1,0 +1,84 @@
+@use '../abstracts' as *;
+
+.notes {
+  &__title {
+    @include display-heading($font-4xl);
+    margin: 26px 0 14px;
+  }
+
+  &__form {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 22px;
+  }
+
+  &__input {
+    flex: 1;
+    padding: 8px 2px;
+    background: none;
+    border: 0;
+    border-bottom: 2px solid var(--border);
+    outline: 0;
+
+    &:focus {
+      border-color: var(--accent);
+    }
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  &__empty {
+    color: var(--muted);
+    font-weight: $weight-semibold;
+  }
+}
+
+.note {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: $radius-card;
+  background: var(--surface);
+  border: 1px solid var(--border);
+
+  &__text {
+    margin: 0 0 4px;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+
+  &__date {
+    color: var(--muted);
+    font-weight: $weight-semibold;
+  }
+
+  &__delete {
+    flex: none;
+    width: 34px;
+    height: 34px;
+    display: grid;
+    place-items: center;
+    border-radius: $radius-circle;
+    color: var(--muted);
+
+    &:hover {
+      color: var(--accent);
+      background: var(--surface2);
+    }
+
+    .icon {
+      width: 18px;
+      height: 18px;
+    }
+  }
+}

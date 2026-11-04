@@ -1,0 +1,147 @@
+@use '../abstracts' as *;
+
+.series {
+  &__hero {
+    position: relative;
+    isolation: isolate;
+    padding: clamp(96px, 12vw, 180px) 40px 36px;
+    --backdrop-radius: #{$radius-hero};
+    border-radius: $radius-hero;
+    box-shadow: $shadow-dialog;
+
+    @include below(md) {
+      padding: 120px 20px 24px;
+    }
+
+    @include below(sm) {
+      padding: 160px 16px 20px;
+    }
+
+    .facts__item {
+      background: color-mix(in srgb, var(--surface) 72%, transparent);
+      backdrop-filter: blur(10px);
+    }
+  }
+
+  &__info {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 230px 1fr;
+    align-items: end;
+    gap: 36px;
+
+    > .thumb {
+      align-self: start;
+      box-shadow: $shadow-cover;
+    }
+
+    @include below(md) {
+      grid-template-columns: 130px 1fr;
+      gap: 18px;
+    }
+
+    @include below(sm) {
+      grid-template-columns: 1fr;
+
+      > .thumb {
+        width: 140px;
+      }
+    }
+  }
+
+  &__title {
+    @include display-heading(clamp(1.75rem, 3.6vw, 2.75rem));
+    line-height: 1.12;
+    margin: 4px 0;
+  }
+
+  &__tags {
+    margin-top: 14px;
+  }
+
+  &__synopsis {
+    max-width: 640px;
+    margin: 0 0 18px;
+    color: var(--text-soft);
+  }
+}
+
+.next-episode {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 0 4px;
+  color: var(--muted);
+  @include font-lg-bold;
+
+  .icon {
+    width: 18px;
+    height: 18px;
+    color: var(--accent);
+  }
+
+  b {
+    color: var(--text);
+    font-weight: $weight-extrabold;
+  }
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+
+  &__item {
+    min-width: 0;
+    padding: 10px 14px;
+    border-radius: $radius-xl;
+    background: var(--surface);
+    border: 1px solid var(--border);
+
+    small {
+      display: block;
+      color: var(--muted);
+      @include font-sm-bold;
+    }
+
+    b {
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-weight: $weight-extrabold;
+    }
+  }
+}
+
+.series__split {
+  display: flex;
+  align-items: flex-start;
+  gap: 28px;
+
+  @include below(lg) {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+.series__main {
+  flex: 1;
+  min-width: 0;
+}
+
+.series__split > .watch-order {
+  flex: none;
+  width: 380px;
+  margin-left: auto;
+
+  @include below(lg) {
+    width: auto;
+    margin-left: 0;
+  }
+}

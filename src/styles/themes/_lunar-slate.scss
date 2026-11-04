@@ -1,0 +1,33 @@
+@use '../abstracts' as *;
+
+@include theme(
+  'lunar-slate',
+  (
+    dark: true,
+    bg: #0b0d10,
+    surface: #171c22,
+    surface2: #2a333d,
+    border: #2a333d,
+    text: #e7eef5,
+    muted: #94a5b6,
+    placeholder: #5d6f82,
+    thumb: #111519,
+    gold: #e0bd6e,
+    green: #7cc6a0,
+    red: #ec7f83,
+    accents: (
+      'moon': #c3cfdb,
+      'ice': #e7eef5,
+      'slate': #5d6f82,
+      'blue': #7cb0e8,
+      'teal': #5fc9bd,
+      'green': #7cc6a0,
+      'amber': #e0bd6e,
+      'rose': #ec8fa8,
+      'violet': #a99bf0,
+    ),
+    accent: 'moon',
+    second: 'slate',
+    second-alt: 'moon',
+  )
+);

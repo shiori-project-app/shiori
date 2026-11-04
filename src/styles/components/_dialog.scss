@@ -1,0 +1,59 @@
+@use '../abstracts' as *;
+
+.dialog {
+  width: min(760px, calc(100vw - 48px));
+  max-height: calc(100vh - 64px);
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: $radius-panel;
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: $shadow-dialog;
+
+  &::backdrop {
+    background: rgb(var(--bg-rgb) / 0.7);
+  }
+
+  &__panel {
+    padding: 20px 22px 18px;
+  }
+
+  &__head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 14px;
+  }
+
+  &__title {
+    @include display-heading($font-4xl);
+    margin: 0;
+  }
+
+  &__sub {
+    margin: 2px 0 0;
+    color: var(--muted);
+    font-weight: $weight-bold;
+  }
+
+  &__close {
+    flex: none;
+    width: 36px;
+    height: 36px;
+    display: grid;
+    place-items: center;
+    border-radius: $radius-circle;
+    color: var(--muted);
+
+    &:hover:not([disabled]) {
+      color: var(--text);
+      background: var(--surface2);
+    }
+
+    &[disabled] {
+      opacity: 0.4;
+      cursor: default;
+    }
+  }
+}

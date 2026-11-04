@@ -1,0 +1,19 @@
+@use '../abstracts' as *;
+
+.empty-state {
+  max-width: 480px;
+  margin: 40px auto;
+  padding: 60px 20px;
+  text-align: center;
+  color: var(--muted);
+
+  &__title {
+    @include display-heading($font-4xl);
+    margin: 0 0 8px;
+    color: var(--text);
+  }
+
+  .btn {
+    margin-top: 14px;
+  }
+}
