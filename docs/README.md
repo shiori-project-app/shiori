@@ -64,7 +64,7 @@ Each file below is a short reference. Open the one you need, then follow it to t
 - [episode-numbering.md](episode-numbering.md) explains how releases and files are matched to season episodes.
 - [offline.md](offline.md) covers offline mode, saved shows and fallbacks.
 - [performance.md](performance.md) covers known performance issues and the decisions behind the current design.
-- [linux.md](linux.md) covers building and running on Linux.
+- [linux.md](linux.md) covers building and running on Linux, what users need to install, and known problems.
 - [api.md](api.md) covers API clients, mappers and services.
 - [contexts.md](contexts.md) lists the React contexts.
 - [main-process.md](main-process.md) covers `electron/` and `shared/`.

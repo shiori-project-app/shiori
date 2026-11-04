@@ -1,12 +1,42 @@
 # Linux
 
-Linux support hasn't been run on a real Linux system yet, only checked by unit tests that simulate the platform. Expect to find problems the first time it runs.
+Shiori has run on one real Linux system so far: x64 CachyOS with Hyprland on Wayland, in November 2026. There the AppImage, the tar.gz and the pacman package's files passed playback, subtitles, library scan, trash and restart. The AppImage also passed tray, autostart and Wayland checks. The x64 deb, rpm and pacman packages have also installed and started on clean Arch, Debian 13, Ubuntu 24.04, Fedora 44 and openSUSE Tumbleweed systems. Those runs used a virtual display with the sandbox off, so they only show that the app installs, starts and draws its page. See [Not tested yet](#not-tested-yet).
+
+## What users need to install
+
+### To run Shiori
+
+- **deb, rpm, pacman:** the package manager installs what's required. The dependencies are listed in `build.deb`, `build.rpm` and `build.pacman` in `package.json`, because electron-builder's defaults ask for `http-parser`, which Arch doesn't have, and leave out libraries the binary links to.
+- **Fonts:** a system with no fonts at all crashes at start with `Could not find any font`. Desktop installs always have some.
+- **AppImage:** needs `fusermount`, from `fuse3` on Debian, Ubuntu, Fedora and Arch. Without it, run `./Shiori.AppImage --appimage-extract-and-run`, which copies the app to `/tmp` on every start.
+- **AppImage and tar.gz:** these don't bundle GTK and the other desktop libraries, and desktop installs usually have them already. If Shiori stops with `error while loading shared libraries`, install what's missing:
+
+| Distro                    | Command                                                                                                                                                                                  |
+| ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Debian, Ubuntu, Mint, Pop | `sudo apt install libgtk-3-0 libnotify4 libnss3 libxss1 libxtst6 xdg-utils libatspi2.0-0 libuuid1 libsecret-1-0 libgbm1 libcups2 libasound2` (`libasound2t64` on Ubuntu 24.04 and later) |
+| Fedora                    | `sudo dnf install gtk3 libnotify nss libXScrnSaver libXtst xdg-utils at-spi2-core libuuid mesa-libgbm cups-libs alsa-lib`                                                                |
+| Arch, Manjaro             | `sudo pacman -S gtk3 libnotify nss libxss libxtst xdg-utils at-spi2-core util-linux-libs mesa libcups alsa-lib`                                                                          |
+
+### Optional, for specific features
+
+| Feature                          | Install                                                                        | Without it                                                                      |
+| -------------------------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------- |
+| Torrents (SubsPlease, Nyaa)      | `qbittorrent`                                                                  | The magnet link goes to the system's default handler, if there is one           |
+| Japanese text                    | Noto Sans CJK: `fonts-noto-cjk` on Debian and Ubuntu, `noto-fonts-cjk` on Arch | Japanese titles may show as empty boxes                                         |
+| HEVC video                       | A VA-API driver for your GPU                                                   | Those files show the unsupported message with its open in default player button |
+| Cleanup to Trash                 | `gio`: `libglib2.0-bin` on Debian and Ubuntu, `glib2` on Arch                  | The file stays where it is and the error says so                                |
+| Opening folders, files and links | `xdg-utils`                                                                    | Those buttons fail                                                              |
+| Tray on GNOME                    | The AppIndicator extension: `gnome-shell-extension-appindicator`               | The tray setting is locked and closing the window quits                         |
+| Tray detection                   | `dbus-send` or `gdbus`                                                         | Only X11 desktops other than GNOME count as having a tray                       |
+| In-app restart                   | `bash`                                                                         | Shiori stays open and asks you to reopen it yourself                            |
 
 ## Building
 
 - `npm run dist:linux` builds AppImage, deb, rpm, pacman and tar.gz packages for x64 and arm64 into `release/`.
+- To build one package type, use `npm run dist:appimage`, `dist:debian` (deb), `dist:fedora` (rpm), `dist:arch` (pacman, x64 only because the Arch repos are x64) or `dist:portable` (tar.gz). `npm run dist:win` builds the Windows installer, which is safest to build on Windows.
 - Run the build on Linux: a machine, WSL, Docker or CI. It can't run on Windows because `mksquashfs` and `fpm` have no Windows version, and a tar.gz made there loses its executable bits, so `shiori` won't start without `chmod +x`.
-- The rpm needs `rpm` installed and the pacman package needs `libarchive-tools` (bsdtar). Remove a target from `build.linux.target` if you don't need it.
+- The rpm needs `rpmbuild`, from `rpm` on Debian and Ubuntu or `rpm-tools` on Arch. Without it `dist:linux` fails and later targets such as pacman aren't built, so use the single-type scripts or remove the target from `build.linux.target`.
+- The pacman package needs bsdtar, from `libarchive-tools` on Debian and Ubuntu.
 - deb, rpm and pacman require `homepage` and `maintainer` in `package.json`. Both end up in the package details.
 
 ## Which package runs where
@@ -26,13 +56,37 @@ Linux support hasn't been run on a real Linux system yet, only checked by unit t
 - **Start at login:** `loginItem.js` writes `~/.config/autostart/shiori.desktop`, because Electron's login item does nothing on Linux. The file is rewritten at launch if the AppImage has moved.
 - **Tray:** `desktopHasTray` in `linuxDesktop.js` decides whether a tray exists. It counts one if a StatusNotifier watcher is running, or on an X11 desktop other than GNOME. Otherwise the setting is locked and closing the window quits, because an invisible icon would leave no way to quit. Clicking the icon may do nothing under AppIndicator, so its menu includes Open Shiori.
 - **Torrents:** Shiori looks for `qbittorrent` on `PATH` and for the Flatpak, then falls back to the system magnet handler. Programs it starts have the AppImage's folders removed from their environment (`environmentOutsideApp`).
-- **Restart:** `relaunchOptions` restarts the AppImage file, because its mounted copy goes away on quit.
+- **Launcher and bar icon:** Wayland bars and launchers ignore the window's icon and find one through the `.desktop` entry matching the app's id, `shiori`. The AppImage and tar.gz don't install one, so `linuxLauncherEntry.js` writes `~/.local/share/applications/shiori.desktop` and the icon in `~/.local/share/icons` at launch. It rewrites them if the AppImage has moved, and removes them if a package's entry exists. An entry without its `X-Shiori-Managed` line is the user's own and is left alone. The files stay behind if the AppImage is deleted. `TryExec` hides that entry, and it hides a package's entry too until Shiori runs from a terminal or the file is deleted.
+- **Restart:** `startAgainAfterExit` starts a small bash script that closes the file descriptors it inherited, waits for Shiori to exit, then runs the AppImage file or the installed program. `app.relaunch` isn't used on Linux: what it starts has `no_new_privs` set, so `fusermount` can't mount the AppImage and the SUID sandbox can't start. If bash can't start or the program is gone, Shiori stays open and shows an error.
 - **Cleanup:** the UI says Trash, and paths compare with exact capitals. `shell.trashItem` needs the desktop's trash tool, usually `gio`. If it's missing, the file stays where it is and the error says so.
 - **Show folders:** folders ending in a dot or space stay as they are, because the rename at startup only runs on Windows.
 - **Backups from Windows:** saved file links are full paths, so after a restore they show as not found until they're linked again.
 
 ## Known limits
 
-- HEVC needs working hardware decoding, which is fragile in Chromium on Linux. Those files often show the unsupported message with its open in default player button. No GPU flags are forced, because a bad one can stop the app starting.
+- HEVC needs working hardware decoding, which is fragile in Chromium on Linux. It played on the test machine above, but elsewhere those files often show the unsupported message with its open in default player button. No GPU flags are forced, because a bad one can stop the app starting.
 - Japanese text needs a system font such as Noto Sans CJK. The deb recommends `fonts-noto-cjk`, and other packages rely on the distro having one.
 - Flatpak and Snap packages aren't built.
+
+## Known problems
+
+Confirmed:
+
+- **A leftover AppImage entry can hide a package's entry.** After deleting the AppImage and installing a package, Shiori can disappear from the launcher. To fix it, run `shiori` once from a terminal, or delete `~/.local/share/applications/shiori.desktop`.
+- **The launcher entry and icon stay behind after deleting the AppImage.** To remove them, delete that entry and `~/.local/share/icons/hicolor/512x512/apps/shiori.png`.
+- **Shiori can't start from a shell that has `ELECTRON_RUN_AS_NODE` set,** such as VS Code's extension host. It stops with `bad option`. Use `env -u ELECTRON_RUN_AS_NODE`.
+
+Possible, not confirmed:
+
+- **qBittorrent may keep the AppImage's mount alive.** `launchDetached` in `torrents.js` doesn't close inherited file descriptors, so a qBittorrent started from the AppImage may hold `/tmp/.mount_Shiori*` open after Shiori quits.
+- **The tar.gz may not start where unprivileged user namespaces are off.** It can't ship the SUID helper set up. Run `sudo chown root:root chrome-sandbox && sudo chmod 4755 chrome-sandbox` in its folder.
+- **The AppImage file itself may show a generic icon in file managers.** That depends on the file manager's thumbnailer.
+
+## Not tested yet
+
+- Real desktops other than Hyprland, including GNOME, KDE and X11 sessions.
+- Manjaro, Mint, Pop and RHEL.
+- Playback, restart and the sandbox on any system other than the CachyOS one.
+- Any arm64 build.
+- Real downloads, qBittorrent, the full player screen and the tray menu.
+- HEVC on other GPUs.

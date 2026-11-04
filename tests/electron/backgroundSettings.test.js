@@ -9,7 +9,13 @@ const fakes = vi.hoisted(() => ({
   handlers: new Map(),
   getLoginItemSettings: vi.fn(),
   setLoginItemSettings: vi.fn(),
+  relaunch: vi.fn(),
+  quit: vi.fn(),
+  spawn: vi.fn(),
+  showErrorBox: vi.fn(),
 }));
+
+vi.mock('node:child_process', async (importOriginal) => ({ ...(await importOriginal()), spawn: fakes.spawn }));
 
 vi.mock('electron', () => ({
   app: {
@@ -21,11 +27,13 @@ vi.mock('electron', () => ({
 
     getLoginItemSettings: fakes.getLoginItemSettings,
     setLoginItemSettings: fakes.setLoginItemSettings,
+    relaunch: fakes.relaunch,
+    quit: fakes.quit,
     commandLine: { appendSwitch: () => {} },
   },
 
   BrowserWindow: { fromWebContents: () => null },
-  dialog: {},
+  dialog: { showErrorBox: fakes.showErrorBox },
   ipcMain: { handle: (channel, handler) => fakes.handlers.set(channel, handler) },
   shell: {},
 }));
@@ -40,12 +48,14 @@ const loadHandlers = async () => {
   return {
     getSettings: () => fakes.handlers.get('settings:get')(),
     update: (changes) => fakes.handlers.get('settings:update-background')({}, changes),
+    restart: () => fakes.handlers.get('settings:restart')(),
   };
 };
 
 const savedSettings = () => JSON.parse(fs.readFileSync(path.join(fakes.userData, 'settings.json'), 'utf8'));
 
 const realPlatform = process.platform;
+const realArguments = process.argv;
 
 const pretendPlatformIs = (platform) => Object.defineProperty(process, 'platform', { value: platform });
 
@@ -56,6 +66,11 @@ describe('background settings', () => {
     pretendPlatformIs('win32');
     fakes.getLoginItemSettings.mockReset().mockReturnValue({ openAtLogin: false });
     fakes.setLoginItemSettings.mockReset();
+    fakes.relaunch.mockReset();
+    fakes.quit.mockReset();
+    fakes.spawn.mockReset();
+    fakes.showErrorBox.mockReset();
+    process.argv = realArguments;
   });
 
   afterEach(() => {
@@ -152,6 +167,58 @@ describe('background settings', () => {
       const { getSettings } = await loadHandlers();
 
       expect(getSettings().platform).toBe('linux');
+    });
+
+    it('restarts through its own shell, because app.relaunch stops the AppImage mounting', async () => {
+      fakes.spawn.mockReturnValue({ once: (name, listener) => name === 'spawn' && listener(), unref: () => {} });
+
+      const { restart } = await loadHandlers();
+
+      await restart();
+
+      expect(fakes.spawn).toHaveBeenCalledTimes(1);
+      expect(fakes.relaunch).not.toHaveBeenCalled();
+      expect(fakes.quit).toHaveBeenCalledTimes(1);
+    });
+
+    it('comes back with a window after a session that started in the tray', async () => {
+      process.argv = ['shiori', '--wanted', '--start-in-tray'];
+      fakes.spawn.mockReturnValue({ once: (name, listener) => name === 'spawn' && listener(), unref: () => {} });
+
+      const { restart } = await loadHandlers();
+
+      await restart();
+
+      expect(fakes.spawn.mock.calls[0][1].slice(4)).toEqual(['--wanted']);
+    });
+
+    it('stays open and says so if the shell cannot start', async () => {
+      fakes.spawn.mockReturnValue({
+        once: (name, listener) => name === 'error' && listener(new Error('no shell')),
+        unref: () => {},
+      });
+
+      const { restart } = await loadHandlers();
+
+      await restart();
+
+      expect(fakes.showErrorBox).toHaveBeenCalledTimes(1);
+      expect(fakes.relaunch).not.toHaveBeenCalled();
+      expect(fakes.quit).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('on Windows', () => {
+    it('restarts with the normal relaunch, without the tray argument, and starts no shell', async () => {
+      process.argv = ['Shiori.exe', '--wanted', '--start-in-tray'];
+
+      const { restart } = await loadHandlers();
+
+      await restart();
+
+      expect(fakes.relaunch).toHaveBeenCalledWith({ args: ['--wanted'] });
+      expect(fakes.spawn).not.toHaveBeenCalled();
+      expect(fakes.quit).toHaveBeenCalledTimes(1);
     });
   });
 });

@@ -3,7 +3,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-const folders = vi.hoisted(() => ({ userData: '', downloads: '' }));
+const folders = vi.hoisted(() => ({ userData: '', downloads: '', videos: '' }));
 
 vi.mock('electron', () => ({
   app: { getPath: (name) => folders[name] },
@@ -12,6 +12,8 @@ vi.mock('electron', () => ({
   ipcMain: { handle: () => {} },
   shell: {},
 }));
+
+const realPlatform = process.platform;
 
 const settingsFile = () => path.join(folders.userData, 'settings.json');
 
@@ -31,10 +33,14 @@ describe('scanLibrary', () => {
     testFolder = fs.mkdtempSync(path.join(os.tmpdir(), 'shiori-scan-'));
     folders.userData = path.join(testFolder, 'AppData');
     folders.downloads = path.join(testFolder, 'Downloads');
+    folders.videos = path.join(testFolder, 'Videos');
     fs.mkdirSync(folders.userData, { recursive: true });
   });
 
-  afterEach(() => fs.rmSync(testFolder, { recursive: true, force: true }));
+  afterEach(() => {
+    Object.defineProperty(process, 'platform', { value: realPlatform });
+    fs.rmSync(testFolder, { recursive: true, force: true });
+  });
 
   it('lists video files from a reachable folder', async () => {
     const downloadDir = path.join(testFolder, 'Anime');
@@ -62,10 +68,13 @@ describe('scanLibrary', () => {
     expect(await scanWithFolder(downloadDir)).toEqual({ root: downloadDir, files: [], isUnreachable: true });
   });
 
-  it('accepts the app’s own default folder before anything has been downloaded', async () => {
-    const scan = await scanWithFolder(null);
+  it.each([
+    ['win32', () => path.join(folders.userData, 'Downloads')],
+    ['linux', () => path.join(folders.videos, 'Shiori')],
+  ])('accepts the app’s own default folder on %s before anything has been downloaded', async (platform, folder) => {
+    Object.defineProperty(process, 'platform', { value: platform });
 
-    expect(scan).toEqual({ root: path.join(folders.userData, 'Downloads'), files: [], isUnreachable: false });
+    expect(await scanWithFolder(null)).toEqual({ root: folder(), files: [], isUnreachable: false });
   });
 
   it('keeps scanning past a subfolder it may not open', async () => {

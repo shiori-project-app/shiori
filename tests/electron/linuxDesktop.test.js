@@ -1,8 +1,10 @@
+import fs from 'node:fs';
+import path from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-const spawnSync = vi.hoisted(() => vi.fn());
+const { spawn, spawnSync } = vi.hoisted(() => ({ spawn: vi.fn(), spawnSync: vi.fn() }));
 
-vi.mock('node:child_process', () => ({ spawnSync, default: { spawnSync } }));
+vi.mock('node:child_process', () => ({ spawn, spawnSync, default: { spawn, spawnSync } }));
 
 const realPlatform = process.platform;
 const realEnvironment = process.env;
@@ -25,6 +27,7 @@ describe('linuxDesktop', () => {
     Object.defineProperty(process, 'platform', { value: 'linux' });
     process.env = { ...realEnvironment };
     DESKTOP_VARIABLES.forEach((name) => delete process.env[name]);
+    spawn.mockReset();
     spawnSync.mockReset();
     answerTrayWatcherWith('   boolean false\n');
   });
@@ -120,19 +123,102 @@ describe('linuxDesktop', () => {
     });
   });
 
-  describe('relaunchOptions', () => {
-    it('restarts the AppImage file, because its running copy disappears on quit', async () => {
-      useDesktop({ APPIMAGE: '/home/me/Shiori.AppImage' });
+  describe('startAgainAfterExit', () => {
+    const shellThatEmits = (eventName, detail) => {
+      const shell = {
+        unref: vi.fn(),
+        once: (name, listener) => {
+          if (name === eventName) listener(detail);
+        },
+      };
 
-      const { relaunchOptions } = await loadDesktop();
+      spawn.mockReturnValue(shell);
 
-      expect(relaunchOptions()).toEqual({ execPath: '/home/me/Shiori.AppImage', args: process.argv.slice(1) });
+      return shell;
+    };
+
+    const startedProgram = () => spawn.mock.calls[0][1].slice(3);
+
+    const appImageFolder = () => path.dirname(process.execPath);
+
+    beforeEach(() => vi.spyOn(fs, 'accessSync').mockImplementation(() => {}));
+
+    afterEach(() => vi.restoreAllMocks());
+
+    it('starts the AppImage file, because its running copy disappears on quit', async () => {
+      useDesktop({ APPIMAGE: '/home/me/Shiori.AppImage', APPDIR: appImageFolder() });
+      shellThatEmits('spawn');
+
+      const { startAgainAfterExit } = await loadDesktop();
+
+      await startAgainAfterExit(['--wanted']);
+
+      expect(startedProgram()).toEqual(['/home/me/Shiori.AppImage', '--wanted']);
     });
 
-    it('uses the normal restart otherwise', async () => {
-      const { relaunchOptions } = await loadDesktop();
+    it('ignores an APPIMAGE variable inherited from another AppImage', async () => {
+      useDesktop({ APPIMAGE: '/home/me/Editor.AppImage', APPDIR: '/tmp/.mount_Editor' });
+      shellThatEmits('spawn');
 
-      expect(relaunchOptions()).toEqual({});
+      const { startAgainAfterExit } = await loadDesktop();
+
+      await startAgainAfterExit([]);
+
+      expect(startedProgram()).toEqual([process.execPath]);
+    });
+
+    it('keeps extracting an AppImage that was started on a system without FUSE', async () => {
+      useDesktop({ APPIMAGE: '/home/me/Shiori.AppImage', APPDIR: appImageFolder() });
+      vi.spyOn(path, 'basename').mockReturnValue('appimage_extracted_abc');
+      shellThatEmits('spawn');
+
+      const { startAgainAfterExit } = await loadDesktop();
+
+      await startAgainAfterExit(['--appimage-extract-and-run', '--wanted']);
+
+      expect(startedProgram()).toEqual(['/home/me/Shiori.AppImage', '--appimage-extract-and-run', '--wanted']);
+    });
+
+    it('reports a program that has gone, without starting a shell', async () => {
+      const failure = new Error('gone');
+      const { startAgainAfterExit } = await loadDesktop();
+
+      fs.accessSync.mockImplementation((file) => {
+        if (file === process.execPath) throw failure;
+      });
+
+      await expect(startAgainAfterExit([])).rejects.toBe(failure);
+      expect(spawn).not.toHaveBeenCalled();
+    });
+
+    it('starts the running program when there is no AppImage', async () => {
+      shellThatEmits('spawn');
+
+      const { startAgainAfterExit } = await loadDesktop();
+
+      await startAgainAfterExit(['--wanted']);
+
+      expect(startedProgram()).toEqual([process.execPath, '--wanted']);
+    });
+
+    it('leaves the shell running on its own, waiting on a pipe that closes when Shiori exits', async () => {
+      const shell = shellThatEmits('spawn');
+      const { startAgainAfterExit } = await loadDesktop();
+
+      await startAgainAfterExit([]);
+
+      expect(spawn.mock.calls[0][2]).toMatchObject({ detached: true, stdio: ['pipe', 'ignore', 'ignore'] });
+      expect(shell.unref).toHaveBeenCalled();
+    });
+
+    it('reports a shell that could not start', async () => {
+      const failure = new Error('no shell');
+
+      shellThatEmits('error', failure);
+
+      const { startAgainAfterExit } = await loadDesktop();
+
+      await expect(startAgainAfterExit([])).rejects.toBe(failure);
     });
   });
 });
