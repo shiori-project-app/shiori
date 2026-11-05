@@ -13,17 +13,33 @@ Installed copies of Shiori update themselves from this repo's GitHub Releases, u
 
 ## Publishing a release
 
-1. Update `version` in `package.json`, using a higher version number than the last release. The app only updates to a higher version.
-2. Close any running copy of Shiori, then run `npm run dist`.
-3. On GitHub, go to Releases and draft a new release with the tag `v<version>`, such as `v1.1.0`.
-4. Upload these three files from `release/`: `Shiori-Setup-<version>.exe`, `Shiori-Setup-<version>.exe.blockmap` and `latest.yml`.
-5. Publish it. Drafts and pre-releases aren't offered to users.
+`.github/workflows/release.yml` does the building, so no Linux machine is needed.
 
-For Linux, run `npm run dist:linux` on Linux and also upload the packages, `latest-linux.yml` and `latest-linux-arm64.yml` to the same release.
+1. Add a `## <version>` section at the top of `CHANGELOG.md` and commit it. It becomes the release notes. `npm version` refuses to run with uncommitted changes to tracked files, so this comes first.
+2. Update the version and push it with its tag. Use `patch`, `minor` or `major`:
+
+   ```bash
+   npm version minor
+   git push --follow-tags
+   ```
+
+   `npm version` updates `package.json` and `package-lock.json`, commits them and creates the `v<version>` tag. The app only updates to a higher version.
+
+3. The workflow checks that the tag matches `package.json` and that the changelog has the version, then runs the checks and tests. It builds on Windows and Linux, writes `SHA256SUMS.txt`, adds a build attestation and creates a draft release.
+4. Open the draft under Releases, read the notes and try the installer.
+5. Click Publish. Drafts and pre-releases aren't offered to users, and a published release reaches them the next time they open Shiori.
+
+If a build fails, fix it and move the tag: `git tag -f v1.1.0`, then `git push -f origin v1.1.0`. Running the workflow again updates the same draft. It refuses to touch a release that's already published.
+
+The workflow builds x64 only. `npm run dist` and `npm run dist:linux` still build locally for testing, and `dist:linux` includes arm64, which hasn't been tested.
+
+If you protect `v*` tags with a ruleset, whoever pushes the tag must be on its bypass list.
+
+The notes around the changelog text come from `.github/release-notes-template.md`, filled in by `.github/scripts/releaseNotes.js`.
 
 ## Rules to keep
 
-- Upload `latest.yml` every time. Without it, the app can't see the new version.
+- Every release needs `latest.yml` and `latest-linux.yml`, or the app can't see the new version. The workflow fails if either is missing.
 - Keep the installer's file name free of spaces (`build.nsis.artifactName`). GitHub renames uploaded files with spaces, which would stop the name matching `latest.yml`.
 - The `dist` scripts pass `--publish never`, so a build never uploads anything by itself.
 

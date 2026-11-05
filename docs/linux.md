@@ -28,7 +28,7 @@ Shiori has run on one real Linux desktop so far, in a Wayland session. There the
 
 ## Building
 
-- `npm run dist:linux` builds AppImage, deb, rpm, pacman and tar.gz packages for x64 and arm64 into `release/`.
+- Releases are built by `.github/workflows/release.yml`; see [releasing.md](releasing.md). To build locally, `npm run dist:linux` builds AppImage, deb, rpm, pacman and tar.gz packages for x64 and arm64 into `release/`.
 - To build one package type, use `npm run dist:appimage`, `dist:debian` (deb), `dist:fedora` (rpm), `dist:arch` (pacman, x64 only because the Arch repos are x64) or `dist:portable` (tar.gz). `npm run dist:win` builds the Windows installer, which is safest to build on Windows.
 - Run the build on Linux: a machine, WSL, Docker or CI. It can't run on Windows because `mksquashfs` and `fpm` have no Windows version, and a tar.gz made there loses its executable bits, so `shiori` won't start without `chmod +x`.
 - The rpm needs `rpmbuild`, from `rpm` on Debian and Ubuntu or `rpm-tools` on Arch. Without it `dist:linux` fails and later targets such as pacman aren't built, so use the single-type scripts or remove the target from `build.linux.target`.

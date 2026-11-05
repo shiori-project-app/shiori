@@ -134,11 +134,24 @@ Torrents go to [qBittorrent](https://www.qbittorrent.org/) or your system's magn
 
 There's no account, and your list, history and settings stay on your computer. Shiori connects to the internet to read show data from AniList, Jikan and AniSkip, to reach the download sources above, and to check GitHub for updates.
 
-## Credits and disclaimer
+## Credits
 
-Show data comes from [AniList](https://anilist.co), extra episode names from [Jikan](https://jikan.moe) and skip times from AniSkip. Shiori isn't affiliated with any of these services or with the download sources.
+- **Show data and cover art:** [AniList](https://anilist.co).
+- **Extra episode names:** [Jikan](https://jikan.moe), an unofficial MyAnimeList API.
+- **Intro and ending times:** AniSkip.
 
-Shiori doesn't host any videos. Check that downloading is allowed where you live.
+Show information, artwork and titles belong to their owners. Shiori isn't affiliated with any of these services, or with the download sources.
+
+## Disclaimer
+
+Shiori isn't a streaming service. It has no servers and hosts no videos. It shows information about anime, finds episodes on existing third-party sites, and plays files from your own download folder.
+
+- **Direct downloads** come straight from the source site to your computer.
+- **Torrents** are handled by your own torrent app, which also uploads to other people while it downloads.
+
+Shiori doesn't control those sites or what they offer. You're responsible for checking that what you download is allowed where you live.
+
+If you're a rights holder, please contact the site that hosts the content, because Shiori can't remove anything from it.
 
 ## License
 

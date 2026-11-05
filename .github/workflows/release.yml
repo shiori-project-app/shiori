@@ -1,0 +1,199 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref_name }}
+  cancel-in-progress: false
+
+env:
+  ELECTRON_SKIP_BINARY_DOWNLOAD: 1
+  CSC_IDENTITY_AUTO_DISCOVERY: false
+
+jobs:
+  verify:
+    name: Verify the release
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 26
+          cache: npm
+
+      - name: Check that the tag matches package.json
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          expected="v$(node -p "require('./package.json').version")"
+
+          if [ "$TAG" != "$expected" ]; then
+            echo "::error::The tag $TAG does not match the version in package.json ($expected)."
+            exit 1
+          fi
+
+      - name: Check that the changelog has this version
+        env:
+          TAG: ${{ github.ref_name }}
+        run: node .github/scripts/writeReleaseNotes.js "${TAG#v}" release-notes.md
+
+      - run: npm ci
+      - run: npx vp check
+      - run: npx vp test run
+
+  build-windows:
+    name: Build for Windows
+    needs: verify
+    runs-on: windows-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 26
+          cache: npm
+
+      - run: npm ci
+      - run: npx vp build
+      - run: npx electron-builder --win --x64 --publish never
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: windows
+          retention-days: 7
+          if-no-files-found: error
+          compression-level: 0
+          path: |
+            release/Shiori-Setup-*.exe
+            release/Shiori-Setup-*.exe.blockmap
+            release/latest.yml
+
+  build-linux:
+    name: Build for Linux
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 26
+          cache: npm
+
+      - name: Install the packaging tools
+        run: sudo apt-get update && sudo apt-get install -y rpm libarchive-tools
+
+      - run: npm ci
+      - run: npx vp build
+      - run: npx electron-builder --linux AppImage deb rpm pacman tar.gz --x64 --publish never
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: linux
+          retention-days: 7
+          if-no-files-found: error
+          compression-level: 0
+          path: |
+            release/Shiori-*.AppImage
+            release/shiori_*_amd64.deb
+            release/shiori-*.x86_64.rpm
+            release/shiori-*.pacman
+            release/shiori-*.tar.gz
+            release/latest-linux.yml
+
+  draft-release:
+    name: Create the draft release
+    needs: [build-windows, build-linux]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
+
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      TAG: ${{ github.ref_name }}
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 26
+
+      - uses: actions/download-artifact@v8
+        with:
+          path: release-files
+          merge-multiple: true
+
+      - name: Check that every file was built
+        working-directory: release-files
+        run: |
+          version="${TAG#v}"
+
+          expected_files=(
+            "Shiori-Setup-$version.exe"
+            "Shiori-Setup-$version.exe.blockmap"
+            "latest.yml"
+            "Shiori-$version.AppImage"
+            "shiori_${version}_amd64.deb"
+            "shiori-$version.x86_64.rpm"
+            "shiori-$version.pacman"
+            "shiori-$version.tar.gz"
+            "latest-linux.yml"
+          )
+
+          missing=0
+
+          for file in "${expected_files[@]}"; do
+            if [ ! -f "$file" ]; then
+              echo "::error::Missing $file"
+              missing=1
+            fi
+          done
+
+          ls -la
+
+          exit "$missing"
+
+      - name: Write the checksums
+        working-directory: release-files
+        run: |
+          files=(*)
+          sha256sum "${files[@]}" > SHA256SUMS.txt
+
+      - uses: actions/attest@v4
+        with:
+          subject-checksums: release-files/SHA256SUMS.txt
+
+      - name: Write the release notes
+        run: node .github/scripts/writeReleaseNotes.js "${TAG#v}" release-notes.md
+
+      - name: Create or update the draft
+        run: |
+          if is_draft=$(gh release view "$TAG" --json isDraft --jq .isDraft 2>/dev/null); then
+            if [ "$is_draft" != "true" ]; then
+              echo "::error::$TAG is already published, so it was left alone."
+              exit 1
+            fi
+
+            gh release edit "$TAG" --title "Shiori $TAG" --notes-file release-notes.md
+            gh release upload "$TAG" release-files/* --clobber
+          else
+            gh release create "$TAG" release-files/* --draft --verify-tag --title "Shiori $TAG" --notes-file release-notes.md
+          fi
