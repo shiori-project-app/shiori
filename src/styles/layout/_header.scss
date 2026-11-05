@@ -3,7 +3,7 @@
 :root {
   --header-height: 64px;
 
-  @include below(md) {
+  @include below(lg) {
     --header-height: 108px;
   }
 }
@@ -21,7 +21,12 @@
   backdrop-filter: blur(14px);
   border-bottom: 1px solid var(--border);
 
-  @include below(md) {
+  @include below(xl) {
+    gap: 12px;
+    padding: 0 20px;
+  }
+
+  @include below(lg) {
     height: auto;
     flex-wrap: wrap;
     gap: 12px;
@@ -29,6 +34,14 @@
   }
 
   &__random {
+    flex: none;
+
+    span {
+      @include below(xl) {
+        display: none;
+      }
+    }
+
     @include below(md) {
       display: none;
     }
@@ -86,9 +99,10 @@
 
 .nav {
   display: flex;
+  flex: none;
   gap: 4px;
 
-  @include below(md) {
+  @include below(lg) {
     order: 5;
     width: 100%;
     overflow-x: auto;
@@ -102,6 +116,10 @@
     border-radius: $radius-pill;
     font-weight: $weight-bold;
     color: var(--muted);
+
+    @include below(xl) {
+      padding: 8px 10px;
+    }
 
     &:hover {
       color: var(--text);
