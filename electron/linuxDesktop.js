@@ -55,11 +55,19 @@ let desktopTrayAnswer = null;
 
 export const isLinux = () => process.platform === 'linux';
 
+const realFolder = (folder) => {
+  try {
+    return fs.realpathSync(folder);
+  } catch {
+    return null;
+  }
+};
+
 const startedFromAppImage = () =>
   Boolean(process.env.APPIMAGE && process.env.APPDIR) &&
-  path.dirname(process.execPath) === path.resolve(process.env.APPDIR);
+  realFolder(path.dirname(process.execPath)) === realFolder(process.env.APPDIR);
 
-export const appImagePath = () => (startedFromAppImage() ? process.env.APPIMAGE : null);
+const appImagePath = () => (startedFromAppImage() ? process.env.APPIMAGE : null);
 
 const installedProgram = () => appImagePath() ?? process.execPath;
 

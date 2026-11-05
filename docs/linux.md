@@ -1,6 +1,6 @@
 # Linux
 
-Shiori has run on one real Linux system so far: x64 CachyOS with Hyprland on Wayland, in November 2026. There the AppImage, the tar.gz and the pacman package's files passed playback, subtitles, library scan, trash and restart. The AppImage also passed tray, autostart and Wayland checks. The x64 deb, rpm and pacman packages have also installed and started on clean Arch, Debian 13, Ubuntu 24.04, Fedora 44 and openSUSE Tumbleweed systems. Those runs used a virtual display with the sandbox off, so they only show that the app installs, starts and draws its page. See [Not tested yet](#not-tested-yet).
+Shiori has run on one real Linux desktop so far, in a Wayland session. There the AppImage, the tar.gz and the pacman package's files passed playback, subtitles, library scan, trash and restart. The AppImage also passed tray, autostart and Wayland checks. The x64 deb, rpm and pacman packages have also installed and started on clean Arch, Debian 13, Ubuntu 24.04, Fedora 44 and openSUSE Tumbleweed systems. Those runs used a virtual display with the sandbox off, so they only show that the app installs, starts and draws its page. See [Not tested yet](#not-tested-yet).
 
 ## What users need to install
 
@@ -11,24 +11,20 @@ Shiori has run on one real Linux system so far: x64 CachyOS with Hyprland on Way
 - **AppImage:** needs `fusermount`, from `fuse3` on Debian, Ubuntu, Fedora and Arch. Without it, run `./Shiori.AppImage --appimage-extract-and-run`, which copies the app to `/tmp` on every start.
 - **AppImage and tar.gz:** these don't bundle GTK and the other desktop libraries, and desktop installs usually have them already. If Shiori stops with `error while loading shared libraries`, install what's missing:
 
-| Distro                    | Command                                                                                                                                                                                  |
-| ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Debian, Ubuntu, Mint, Pop | `sudo apt install libgtk-3-0 libnotify4 libnss3 libxss1 libxtst6 xdg-utils libatspi2.0-0 libuuid1 libsecret-1-0 libgbm1 libcups2 libasound2` (`libasound2t64` on Ubuntu 24.04 and later) |
-| Fedora                    | `sudo dnf install gtk3 libnotify nss libXScrnSaver libXtst xdg-utils at-spi2-core libuuid mesa-libgbm cups-libs alsa-lib`                                                                |
-| Arch, Manjaro             | `sudo pacman -S gtk3 libnotify nss libxss libxtst xdg-utils at-spi2-core util-linux-libs mesa libcups alsa-lib`                                                                          |
+  - **Debian, Ubuntu, Mint, Pop:** `sudo apt install libgtk-3-0 libnotify4 libnss3 libxss1 libxtst6 xdg-utils libatspi2.0-0 libuuid1 libsecret-1-0 libgbm1 libcups2 libasound2` (`libasound2t64` on Ubuntu 24.04 and later).
+  - **Fedora:** `sudo dnf install gtk3 libnotify nss libXScrnSaver libXtst xdg-utils at-spi2-core libuuid mesa-libgbm cups-libs alsa-lib`.
+  - **Arch, Manjaro:** `sudo pacman -S gtk3 libnotify nss libxss libxtst xdg-utils at-spi2-core util-linux-libs mesa libcups alsa-lib`.
 
 ### Optional, for specific features
 
-| Feature                          | Install                                                                        | Without it                                                                      |
-| -------------------------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------- |
-| Torrents (SubsPlease, Nyaa)      | `qbittorrent`                                                                  | The magnet link goes to the system's default handler, if there is one           |
-| Japanese text                    | Noto Sans CJK: `fonts-noto-cjk` on Debian and Ubuntu, `noto-fonts-cjk` on Arch | Japanese titles may show as empty boxes                                         |
-| HEVC video                       | A VA-API driver for your GPU                                                   | Those files show the unsupported message with its open in default player button |
-| Cleanup to Trash                 | `gio`: `libglib2.0-bin` on Debian and Ubuntu, `glib2` on Arch                  | The file stays where it is and the error says so                                |
-| Opening folders, files and links | `xdg-utils`                                                                    | Those buttons fail                                                              |
-| Tray on GNOME                    | The AppIndicator extension: `gnome-shell-extension-appindicator`               | The tray setting is locked and closing the window quits                         |
-| Tray detection                   | `dbus-send` or `gdbus`                                                         | Only X11 desktops other than GNOME count as having a tray                       |
-| In-app restart                   | `bash`                                                                         | Shiori stays open and asks you to reopen it yourself                            |
+- **Torrents (SubsPlease, Nyaa):** install `qbittorrent`. Without it, the magnet link goes to the system's default handler, if there is one.
+- **Japanese text:** install Noto Sans CJK, which is `fonts-noto-cjk` on Debian and Ubuntu and `noto-fonts-cjk` on Arch. Without it, Japanese titles may show as empty boxes.
+- **HEVC video:** install a VA-API driver for your GPU. Without it, those files show the unsupported message with its open in default player button.
+- **Cleanup to Trash:** install `gio`, from `libglib2.0-bin` on Debian and Ubuntu and `glib2` on Arch. Without it, the file stays where it is and the error says so.
+- **Opening folders, files and links:** install `xdg-utils`. Without it, those buttons fail.
+- **Tray on GNOME:** install the AppIndicator extension, `gnome-shell-extension-appindicator`. Without it, the tray setting is locked and closing the window quits.
+- **Tray detection:** needs `dbus-send` or `gdbus`. Without them, only X11 desktops other than GNOME count as having a tray.
+- **In-app restart:** needs `bash`. Without it, Shiori stays open and asks you to reopen it yourself.
 
 ## Building
 
@@ -65,7 +61,7 @@ Shiori has run on one real Linux system so far: x64 CachyOS with Hyprland on Way
 
 ## Known limits
 
-- HEVC needs working hardware decoding, which is fragile in Chromium on Linux. It played on the test machine above, but elsewhere those files often show the unsupported message with its open in default player button. No GPU flags are forced, because a bad one can stop the app starting.
+- HEVC needs working hardware decoding, which is fragile in Chromium on Linux. It played on the desktop above, but elsewhere those files often show the unsupported message with its open in default player button. No GPU flags are forced, because a bad one can stop the app starting.
 - Japanese text needs a system font such as Noto Sans CJK. The deb recommends `fonts-noto-cjk`, and other packages rely on the distro having one.
 - Flatpak and Snap packages aren't built.
 
@@ -85,9 +81,9 @@ Possible, not confirmed:
 
 ## Not tested yet
 
-- Real desktops other than Hyprland, including GNOME, KDE and X11 sessions.
+- Other real desktops, including GNOME, KDE and X11 sessions.
 - Manjaro, Mint, Pop and RHEL.
-- Playback, restart and the sandbox on any system other than the CachyOS one.
+- Playback, restart and the sandbox on any other system.
 - Any arm64 build.
 - Real downloads, qBittorrent, the full player screen and the tray menu.
 - HEVC on other GPUs.

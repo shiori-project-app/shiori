@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -154,6 +155,30 @@ describe('linuxDesktop', () => {
       await startAgainAfterExit(['--wanted']);
 
       expect(startedProgram()).toEqual(['/home/me/Shiori.AppImage', '--wanted']);
+    });
+
+    it('recognises the AppImage when its folder is reached through a symlink, such as a linked temp folder', async () => {
+      const testFolder = fs.mkdtempSync(path.join(os.tmpdir(), 'shiori-appdir-'));
+      const realAppFolder = path.join(testFolder, 'real');
+      const linkedAppFolder = path.join(testFolder, 'link');
+      const realExecPath = process.execPath;
+
+      fs.mkdirSync(realAppFolder);
+      fs.symlinkSync(realAppFolder, linkedAppFolder, 'junction');
+      process.execPath = path.join(realAppFolder, 'shiori');
+      useDesktop({ APPIMAGE: '/home/me/Shiori.AppImage', APPDIR: linkedAppFolder });
+      shellThatEmits('spawn');
+
+      try {
+        const { startAgainAfterExit } = await loadDesktop();
+
+        await startAgainAfterExit([]);
+
+        expect(startedProgram()).toEqual(['/home/me/Shiori.AppImage']);
+      } finally {
+        process.execPath = realExecPath;
+        fs.rmSync(testFolder, { recursive: true, force: true });
+      }
     });
 
     it('ignores an APPIMAGE variable inherited from another AppImage', async () => {
