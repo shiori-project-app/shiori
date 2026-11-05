@@ -43,7 +43,7 @@ jobs:
       - name: Check that the changelog has this version
         env:
           TAG: ${{ github.ref_name }}
-        run: node .github/scripts/writeReleaseNotes.js "${TAG#v}" release-notes.md
+        run: node .github/scripts/writeReleaseNotes.js "${TAG#v}" "$RUNNER_TEMP/release-notes.md"
 
       - run: npm ci
       - run: npx vp check
@@ -182,7 +182,7 @@ jobs:
           subject-checksums: release-files/SHA256SUMS.txt
 
       - name: Write the release notes
-        run: node .github/scripts/writeReleaseNotes.js "${TAG#v}" release-notes.md
+        run: node .github/scripts/writeReleaseNotes.js "${TAG#v}" "$RUNNER_TEMP/release-notes.md"
 
       - name: Create or update the draft
         run: |
@@ -192,8 +192,8 @@ jobs:
               exit 1
             fi
 
-            gh release edit "$TAG" --title "Shiori $TAG" --notes-file release-notes.md
+            gh release edit "$TAG" --title "Shiori $TAG" --notes-file "$RUNNER_TEMP/release-notes.md"
             gh release upload "$TAG" release-files/* --clobber
           else
-            gh release create "$TAG" release-files/* --draft --verify-tag --title "Shiori $TAG" --notes-file release-notes.md
+            gh release create "$TAG" release-files/* --draft --verify-tag --title "Shiori $TAG" --notes-file "$RUNNER_TEMP/release-notes.md"
           fi
