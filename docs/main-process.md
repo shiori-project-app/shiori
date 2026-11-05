@@ -9,7 +9,9 @@
   - The app quits properly at Windows shutdown so that saves still happen.
   - `--start-in-tray`, used by the login item, opens the app with no window.
 - `loginItem.js` exports `canOpenAtLogin`, `opensAtLogin`, `setOpensAtLogin` and `refreshLoginItem`. It uses Electron's login item on Windows (`electron.app.Shiori` in the Run key, which the uninstaller removes) and an autostart `.desktop` file on Linux. It only acts in the installed app.
-- `linuxDesktop.js` exports `isLinux`, `appImagePath`, `desktopHasTray`, `environmentOutsideApp` (for programs Shiori starts) and `relaunchOptions`. See [linux.md](linux.md).
+- `linuxDesktop.js` exports `isLinux`, `desktopHasTray`, `environmentOutsideApp` (for programs Shiori starts), `desktopEntryProgramLines` and `startAgainAfterExit`. See [linux.md](linux.md).
+- `appIcon.js` exports `APP_ICON_FILE`, the path of the icon used by the window, tray and launcher entry.
+- `linuxLauncherEntry.js` exports `refreshLauncherEntry`, which gives the AppImage and tar.gz a launcher entry and icon. See [linux.md](linux.md).
 - `contextMenu.js` builds the right-click menu. `contextMenuTemplate(params, webContents)` offers spelling fixes and editing in text boxes, copy, link and image actions on page content, and Back and Forward everywhere else.
 - `windowMessages.js` exports `sendToAllWindows(channel, ...payload)`, which sends an event to every open window.
 - `webUrls.js` exports `isWebUrl`, which ensures only `http(s)` addresses open in the browser.

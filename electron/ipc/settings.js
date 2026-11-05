@@ -3,11 +3,19 @@ import path from 'node:path';
 import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron';
 import { DEFAULT_PARALLEL_DOWNLOADS, UNLIMITED_SPEED, validDownloadSettings } from '../../shared/downloadLimits.js';
 import { writeFileAtomically } from '../fileSystem.js';
-import { desktopHasTray, isLinux, relaunchOptions } from '../linuxDesktop.js';
+import { desktopHasTray, isLinux, startAgainAfterExit } from '../linuxDesktop.js';
 import { logError } from '../logger.js';
-import { canOpenAtLogin, opensAtLogin, refreshLoginItem, setOpensAtLogin } from '../loginItem.js';
+import {
+  canOpenAtLogin,
+  opensAtLogin,
+  refreshLoginItem,
+  setOpensAtLogin,
+  START_IN_TRAY_ARGUMENT,
+} from '../loginItem.js';
 
 const SOFTWARE_DRAWING_SWITCH = 'disable-gpu-compositing';
+const RESTART_FAILED_TITLE = 'Shiori could not restart';
+const RESTART_FAILED_MESSAGE = 'Close Shiori and open it again to apply this change.';
 
 const settingsFile = () => path.join(app.getPath('userData'), 'settings.json');
 
@@ -119,11 +127,27 @@ export const setPendingUpdateInstaller = (installer) => {
   installPendingUpdate = installer;
 };
 
-const restartApp = () => {
-  if (installPendingUpdate()) return;
+const restartArguments = () => process.argv.slice(1).filter((argument) => argument !== START_IN_TRAY_ARGUMENT);
 
-  app.relaunch(relaunchOptions());
+const restartOnLinux = async () => {
+  try {
+    await startAgainAfterExit(restartArguments());
+    app.quit();
+  } catch (error) {
+    logError('The restart could not be prepared', error);
+    dialog.showErrorBox(RESTART_FAILED_TITLE, RESTART_FAILED_MESSAGE);
+  }
+};
+
+const restartOnWindows = () => {
+  app.relaunch({ args: restartArguments() });
   app.quit();
+};
+
+const restartApp = () => {
+  if (installPendingUpdate()) return undefined;
+
+  return isLinux() ? restartOnLinux() : restartOnWindows();
 };
 
 const chooseDownloadFolder = async (event) => {

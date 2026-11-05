@@ -21,6 +21,7 @@ const { opensAtLogin, refreshLoginItem, setOpensAtLogin } = await import('../../
 
 const realPlatform = process.platform;
 const realAppImage = process.env.APPIMAGE;
+const realAppFolder = process.env.APPDIR;
 
 const autostartFile = () => path.join(fakes.configFolder, 'autostart', 'shiori.desktop');
 
@@ -37,6 +38,7 @@ describe('login item on Linux', () => {
     fakes.logError.mockReset();
     Object.defineProperty(process, 'platform', { value: 'linux' });
     process.env.APPIMAGE = '/home/me/Apps/Shiori.AppImage';
+    process.env.APPDIR = path.dirname(process.execPath);
   });
 
   afterEach(() => {
@@ -44,6 +46,9 @@ describe('login item on Linux', () => {
 
     if (realAppImage === undefined) delete process.env.APPIMAGE;
     else process.env.APPIMAGE = realAppImage;
+
+    if (realAppFolder === undefined) delete process.env.APPDIR;
+    else process.env.APPDIR = realAppFolder;
 
     fs.rmSync(fakes.configFolder, { recursive: true, force: true });
   });

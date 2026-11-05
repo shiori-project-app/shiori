@@ -1,15 +1,12 @@
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { app, BrowserWindow, Menu, nativeImage, Tray } from 'electron';
+import { APP_ICON_FILE } from './appIcon.js';
 import { getSettings, onSettingsChanged } from './ipc/settings.js';
 import { desktopHasTray } from './linuxDesktop.js';
 import { logError } from './logger.js';
+import { START_IN_TRAY_ARGUMENT } from './loginItem.js';
 
-const START_IN_TRAY_ARGUMENT = '--start-in-tray';
 const TRAY_ICON_SIZE = 32;
 const TRAY_TOOLTIP = 'Shiori';
-
-const TRAY_ICON_FILE = path.join(path.dirname(fileURLToPath(import.meta.url)), '../build/icon.png');
 
 let tray = null;
 let isQuitting = false;
@@ -25,9 +22,9 @@ export const showMainWindow = () => {
 };
 
 const createTray = () => {
-  const icon = nativeImage.createFromPath(TRAY_ICON_FILE);
+  const icon = nativeImage.createFromPath(APP_ICON_FILE);
 
-  if (icon.isEmpty()) throw new Error(`Tray icon not found: ${TRAY_ICON_FILE}`);
+  if (icon.isEmpty()) throw new Error(`Tray icon not found: ${APP_ICON_FILE}`);
 
   const newTray = new Tray(icon.resize({ width: TRAY_ICON_SIZE, height: TRAY_ICON_SIZE }));
 

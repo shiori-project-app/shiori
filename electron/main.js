@@ -1,6 +1,7 @@
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { app, BrowserWindow, ipcMain, powerMonitor, shell } from 'electron';
+import { APP_ICON_FILE } from './appIcon.js';
 import { showContextMenuOnRightClick } from './contextMenu.js';
 import { registerBackupHandlers } from './ipc/backup.js';
 import { registerAniListCacheHandlers } from './ipc/anilistCache.js';
@@ -16,6 +17,7 @@ import { registerTorrentHandlers } from './ipc/torrents.js';
 import { registerUpdateHandlers } from './ipc/updates.js';
 import { registerUserDataHandlers } from './ipc/userData.js';
 import { isLinux } from './linuxDesktop.js';
+import { refreshLauncherEntry } from './linuxLauncherEntry.js';
 import { logInfo, logUnhandledProcessErrors } from './logger.js';
 import { keepWindowInTrayOnClose, opensInTray, showMainWindow, startTray } from './tray.js';
 import { isWebUrl } from './webUrls.js';
@@ -26,7 +28,6 @@ const DEV_SERVER_URL = 'http://127.0.0.1:5173';
 const DEFAULT_THEME_BACKGROUND = '#0b0d10';
 const APP_PAGE_FILE = path.join(electronDirectory, '../dist/index.html');
 const APP_PAGE_URL = pathToFileURL(APP_PAGE_FILE).href;
-const WINDOW_ICON_FILE = path.join(electronDirectory, '../build/icon.png');
 const isDevelopment = !app.isPackaged && process.argv.includes('--dev');
 
 const withoutQueryAndHash = (url) => url.split(/[?#]/)[0];
@@ -60,7 +61,7 @@ const createWindow = () => {
     autoHideMenuBar: true,
     show: false,
     paintWhenInitiallyHidden: !opensInTray(),
-    ...(isLinux() && { icon: WINDOW_ICON_FILE }),
+    ...(isLinux() && { icon: APP_ICON_FILE }),
 
     webPreferences: {
       contextIsolation: true,
@@ -106,6 +107,7 @@ const startApp = () => {
 
   app.whenReady().then(() => {
     logInfo(`Shiori ${app.getVersion()} started`);
+    refreshLauncherEntry();
     IPC_HANDLER_REGISTRATIONS.forEach((registerHandlers) => registerHandlers());
     powerMonitor.on('resume', notifyWindowsOfSystemResume);
     ipcMain.handle('window:show', showMainWindow);

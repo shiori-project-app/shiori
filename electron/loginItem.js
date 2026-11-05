@@ -2,29 +2,22 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { app } from 'electron';
 import { writeFileAtomically } from './fileSystem.js';
-import { appImagePath, isLinux } from './linuxDesktop.js';
+import { desktopEntryProgramLines, isLinux } from './linuxDesktop.js';
 import { logError } from './logger.js';
 
-const START_IN_TRAY_ARGUMENT = '--start-in-tray';
+export const START_IN_TRAY_ARGUMENT = '--start-in-tray';
 const AUTOSTART_FILE_NAME = 'shiori.desktop';
 
 const electronLoginItem = () => ({ path: process.execPath, args: [START_IN_TRAY_ARGUMENT] });
 
 const autostartFile = () => path.join(app.getPath('appData'), 'autostart', AUTOSTART_FILE_NAME);
 
-const installedProgram = () => appImagePath() ?? process.execPath;
-
-const quotedExecArgument = (value) => `"${value.replace(/["`$\\]/g, '\\$&').replace(/%/g, '%%')}"`;
-
-const escapedDesktopString = (value) => value.replace(/\\/g, '\\\\');
-
 const autostartEntry = () =>
   [
     '[Desktop Entry]',
     'Type=Application',
     'Name=Shiori',
-    `TryExec=${escapedDesktopString(installedProgram())}`,
-    `Exec=${escapedDesktopString(`${quotedExecArgument(installedProgram())} ${START_IN_TRAY_ARGUMENT}`)}`,
+    ...desktopEntryProgramLines(START_IN_TRAY_ARGUMENT),
     'Terminal=false',
     'X-GNOME-Autostart-enabled=true',
     '',
