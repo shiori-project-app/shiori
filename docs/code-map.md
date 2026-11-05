@@ -18,6 +18,7 @@
   - `installerSidebar.bmp` (164×314) is shown on the installer's Welcome and Finish pages.
   - `installer.nsh` customizes the installer's Welcome and Finish pages. The Finish page offers Run Shiori and a desktop shortcut checkbox that removes the shortcut when unticked. Functions that read `$mui.FinishPage.*` must come after `MUI_PAGE_FINISH`.
 - `build.nsis` in `package.json` configures the Windows installer: a wizard (`oneClick: false`), per-user or all-users installs, a choosable folder, shortcuts and run after finish. App data, including the default download folder, is kept on uninstall.
-- `.github/dependabot.yml` has Dependabot check npm packages weekly, grouping minor and patch updates into one pull request.
+- `.github/workflows/ci.yml` runs `vp check`, the tests and the build on Windows and Linux for every push and for pull requests from forks.
+- `.github/dependabot.yml` has Dependabot check npm packages and GitHub Actions weekly, grouping minor and patch npm updates into one pull request.
 - `build.publish` in `package.json` points auto-update at this repo's GitHub Releases. See [releasing.md](releasing.md).
 - `tests/` mirrors the source tree. `tests/electron/` runs in Node with the `electron` module mocked, and `tests/fixtures/` holds saved HTML and RSS samples for the scraper parsers.
