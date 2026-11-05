@@ -1,4 +1,6 @@
-# Shiori
+# Shiori developer docs
+
+To install or use the app, see the [main README](../README.md).
 
 Shiori is a desktop anime app for Windows and Linux. It tracks what you watch, plays episodes from your own download folder, and finds new episodes to download. It is built with Electron 45, React 19 and React Router 8, and uses Vite+ (`vp`) for building, formatting, linting and testing.
 

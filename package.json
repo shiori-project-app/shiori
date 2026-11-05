@@ -4,6 +4,7 @@
   "private": true,
   "description": "Shiori — anime desktop app",
   "homepage": "https://github.com/shiori-project-app/shiori",
+  "license": "MIT",
   "author": "shiori-anime",
   "type": "module",
   "main": "electron/main.js",
