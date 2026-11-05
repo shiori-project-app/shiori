@@ -25,7 +25,13 @@ const SurpriseMeButton = () => {
   };
 
   return (
-    <button type="button" className="btn btn--sm header__random" onClick={openRandomSeries}>
+    <button
+      type="button"
+      className="btn btn--sm header__random"
+      aria-label="Surprise me"
+      title="Surprise me"
+      onClick={openRandomSeries}
+    >
       <Icon name="dice" />
       <span>Surprise me</span>
     </button>
