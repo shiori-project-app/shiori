@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { WATCHED_PROGRESS_RATIO } from '@/config/app.config';
-import { exitFullscreen } from '@/hooks/useFullscreen';
 import { useLibrary } from '@/hooks/useLibrary';
 import { resumablePosition } from '@/utils/player';
 
@@ -45,11 +44,5 @@ export const usePlaybackMilestones = ({ episodeId, player, time, onStarted, onWa
     };
   }, [playing, saveCurrentPosition]);
 
-  useEffect(
-    () => () => {
-      saveCurrentPosition();
-      exitFullscreen();
-    },
-    [saveCurrentPosition],
-  );
+  useEffect(() => () => saveCurrentPosition(), [saveCurrentPosition]);
 };

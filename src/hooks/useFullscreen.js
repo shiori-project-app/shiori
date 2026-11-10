@@ -1,13 +1,29 @@
-import { useCallback } from 'react';
+import { useCallback, useSyncExternalStore } from 'react';
+import { useInertOutside } from '@/hooks/useInertOutside';
 
 const ignoreFullscreenRejection = () => {};
 
-export const exitFullscreen = () => {
-  if (document.fullscreenElement) document.exitFullscreen().catch(ignoreFullscreenRejection);
+const isAppFullscreen = () => Boolean(document.fullscreenElement);
+
+const subscribeToFullscreen = (onChange) => {
+  document.addEventListener('fullscreenchange', onChange);
+
+  return () => document.removeEventListener('fullscreenchange', onChange);
 };
 
-export const useFullscreen = (elementRef) =>
-  useCallback(() => {
-    if (document.fullscreenElement) exitFullscreen();
-    else elementRef.current.requestFullscreen().catch(ignoreFullscreenRejection);
-  }, [elementRef]);
+export const exitFullscreen = () => {
+  if (isAppFullscreen()) document.exitFullscreen().catch(ignoreFullscreenRejection);
+};
+
+export const useFullscreen = (elementRef) => {
+  const isFullscreen = useSyncExternalStore(subscribeToFullscreen, isAppFullscreen);
+
+  useInertOutside(elementRef, isFullscreen);
+
+  const toggleFullscreen = useCallback(() => {
+    if (isFullscreen) exitFullscreen();
+    else document.documentElement.requestFullscreen().catch(ignoreFullscreenRejection);
+  }, [isFullscreen]);
+
+  return { isFullscreen, toggleFullscreen };
+};

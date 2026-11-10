@@ -1,12 +1,16 @@
+import { useEffect } from 'react';
 import { Link } from 'react-router';
 import { Artwork } from '@/components/common/Artwork';
 import { Icon } from '@/components/common/Icon';
 import { DownloadButton } from '@/components/downloads/DownloadButton';
 import { LinkFilesButton } from '@/components/downloads/LinkFilesButton';
 import { ROUTES } from '@/constants/routes';
+import { exitFullscreen } from '@/hooks/useFullscreen';
 
 export const EpisodeUnavailable = ({ series, episodeNumber, state }) => {
   const isDownloading = state === 'downloading';
+
+  useEffect(exitFullscreen, []);
 
   return (
     <div className="player player--empty">

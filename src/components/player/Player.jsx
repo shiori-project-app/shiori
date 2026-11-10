@@ -40,7 +40,7 @@ export const Player = ({ series, episode, file, nextEpisode, nextReady, onStarte
   const subtitles = useSubtitles(file, videoRef, subtitleOverlayRef);
   const audio = useAudioTracks(videoRef);
   const [isIdle, markActive] = useIdle(PLAYER_IDLE_MS);
-  const toggleFullscreen = useFullscreen(stageRef);
+  const { isFullscreen, toggleFullscreen } = useFullscreen(stageRef);
   const pictureInPicture = usePictureInPicture(videoRef);
 
   const skipSegments = useSkipSegments({
@@ -93,6 +93,7 @@ export const Player = ({ series, episode, file, nextEpisode, nextReady, onStarte
         player.playing && 'is-playing',
         isIdle && !isMenuOpen && 'is-idle',
         player.ended && 'has-ended',
+        isFullscreen && 'is-fullscreen',
       )}
       onClick={handleStageClick}
       onDoubleClick={handleStageDoubleClick}
@@ -112,8 +113,6 @@ export const Player = ({ series, episode, file, nextEpisode, nextReady, onStarte
       {player.error && <PlaybackError file={file} />}
       <SkipSegmentButton skipSegments={skipSegments} hasEnded={player.ended} />
 
-      <EndCard series={series} nextEpisode={nextEpisode} nextReady={nextReady} ended={player.ended} onReplay={replay} />
-
       {isMenuOpen && <TrackMenu subtitles={subtitles} audio={audio} />}
 
       <VideoTimeContext value={time}>
@@ -128,6 +127,8 @@ export const Player = ({ series, episode, file, nextEpisode, nextReady, onStarte
           pictureInPicture={pictureInPicture}
         />
       </VideoTimeContext>
+
+      <EndCard series={series} nextEpisode={nextEpisode} nextReady={nextReady} ended={player.ended} onReplay={replay} />
     </div>
   );
 };
