@@ -40,14 +40,13 @@ const canReuse = (knownResolution, fileVersion) =>
   knownResolution?.fileVersion === fileVersion &&
   (knownResolution.retryAfter === null || Date.now() < knownResolution.retryAfter);
 
-const startReading = (videoPath, fileVersion, hasLoggedFailure) => {
-  const knownResolution = { fileVersion, retryAfter: null, hasLoggedFailure };
+const startReading = (videoPath, fileVersion, isRetry) => {
+  const knownResolution = { fileVersion, retryAfter: null };
 
   knownResolution.resolution = readVideoResolution(videoPath).catch((error) => {
-    if (!hasLoggedFailure) logError(`Could not read the resolution of ${videoPath}`, error);
+    if (!isRetry) logError(`Could not read the resolution of ${videoPath}`, error);
 
     knownResolution.retryAfter = Date.now() + FAILED_READ_RETRY_DELAY_MS;
-    knownResolution.hasLoggedFailure = true;
 
     return null;
   });
@@ -71,9 +70,7 @@ const rememberedVideoResolution = async (videoPath) => {
 
   if (canReuse(knownResolution, fileVersion)) return knownResolution.resolution;
 
-  const failedBeforeUnchanged = knownResolution?.fileVersion === fileVersion && knownResolution.hasLoggedFailure;
-
-  return startReading(videoPath, fileVersion, failedBeforeUnchanged);
+  return startReading(videoPath, fileVersion, knownResolution?.fileVersion === fileVersion);
 };
 
 const resolutionOfFileOrNull = async (fileKey, videoPathOf) => {

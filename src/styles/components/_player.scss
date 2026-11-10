@@ -139,8 +139,10 @@
     border: 1px solid $white-soft;
     color: $white;
     font-weight: $weight-extrabold;
+    overflow: hidden;
     backdrop-filter: blur(6px);
     animation: player-skip-in 0.2s ease-out;
+    transition: opacity 0.25s;
 
     .icon {
       width: 16px;
@@ -157,6 +159,18 @@
       @include font-md-bold;
       pointer-events: none;
     }
+  }
+
+  &__skip-timer {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 3px;
+    background: currentColor;
+    opacity: 0.6;
+    transform-origin: left;
+    transition: transform 0.3s linear;
   }
 
   &__menu {
@@ -286,7 +300,8 @@
   &.is-idle.is-playing {
     cursor: none;
 
-    .player__controls {
+    .player__controls,
+    .player__skip:not(.is-prompting, .is-notice, :hover) {
       opacity: 0;
       pointer-events: none;
     }

@@ -1,5 +1,16 @@
 import { describe, expect, it } from 'vitest';
-import { fitSkipTimes, reachedByPlaying, segmentAt } from '@/utils/skipTimes';
+import { SKIP_PROMPT_SECONDS } from '@/config/app.config';
+import {
+  fitSkipTimes,
+  NO_SKIP_PROMPT,
+  nextSkipPrompt,
+  reachedByPlaying,
+  seekedBack,
+  segmentAt,
+  segmentShownUntil,
+  skipPromptProgress,
+  skipSegmentKey,
+} from '@/utils/skipTimes';
 
 const frieren = [
   { interval: { startTime: 153.6, endTime: 243.5 }, skipType: 'op', episodeLength: 1470.1 },
@@ -92,5 +103,72 @@ describe('reachedByPlaying', () => {
     expect(reachedByPlaying(intro, 30, 100)).toBe(false);
     expect(reachedByPlaying(intro, 200, 100)).toBe(false);
     expect(reachedByPlaying(intro, null, 100)).toBe(false);
+  });
+});
+
+describe('segmentShownUntil', () => {
+  it('ends half a second before the segment, where segmentAt stops finding it', () => {
+    const intro = { type: 'intro', start: 60, end: 150 };
+
+    expect(segmentShownUntil(intro)).toBe(149.5);
+    expect(segmentAt([intro], 149.49)).toBe(intro);
+    expect(segmentAt([intro], 149.5)).toBeNull();
+  });
+});
+
+describe('seekedBack', () => {
+  it('is true only for a jump back of more than a second', () => {
+    expect(seekedBack(70, 60)).toBe(true);
+    expect(seekedBack(70, 68.9)).toBe(true);
+    expect(seekedBack(70, 69.5)).toBe(false);
+    expect(seekedBack(70, 75)).toBe(false);
+    expect(seekedBack(null, 10)).toBe(false);
+  });
+});
+
+describe('skip prompt helpers', () => {
+  const intro = { type: 'intro', start: 60, end: 150 };
+  const introKey = skipSegmentKey(intro);
+
+  it('names a segment by its type and start, and nothing by null', () => {
+    expect(introKey).toBe('intro-60');
+    expect(skipSegmentKey(null)).toBeNull();
+  });
+
+  it('starts a prompt on entering a segment and on seeking back, and keeps it otherwise', () => {
+    const started = nextSkipPrompt(NO_SKIP_PROMPT, introKey, 59.8, 60);
+
+    expect(started).toEqual({ segmentKey: introKey, startedAt: 60 });
+    expect(nextSkipPrompt(started, introKey, 60, 60.25)).toBe(started);
+    expect(nextSkipPrompt(started, introKey, 64, 61)).toEqual({ segmentKey: introKey, startedAt: 61 });
+    expect(nextSkipPrompt(started, null, 60, 200)).toBe(NO_SKIP_PROMPT);
+  });
+
+  it('reports how much of the prompt is left, by video time', () => {
+    const prompt = { segmentKey: introKey, startedAt: 60 };
+
+    expect(skipPromptProgress(intro, prompt, 60)).toEqual({ isPrompting: true, promptRemaining: 1 });
+    expect(skipPromptProgress(intro, prompt, 60 + SKIP_PROMPT_SECONDS / 2)).toEqual({
+      isPrompting: true,
+      promptRemaining: 0.5,
+    });
+    expect(skipPromptProgress(intro, prompt, 60 + SKIP_PROMPT_SECONDS)).toEqual({
+      isPrompting: false,
+      promptRemaining: 0,
+    });
+    expect(skipPromptProgress(null, prompt, 60)).toEqual({ isPrompting: false, promptRemaining: 0 });
+  });
+
+  it('treats a segment it hasn’t recorded yet as just entered', () => {
+    expect(skipPromptProgress(intro, NO_SKIP_PROMPT, 100)).toEqual({ isPrompting: true, promptRemaining: 1 });
+  });
+
+  it('shortens the prompt to what’s left before the button goes', () => {
+    const lateStart = { segmentKey: introKey, startedAt: segmentShownUntil(intro) - 2 };
+
+    expect(skipPromptProgress(intro, lateStart, segmentShownUntil(intro) - 1)).toEqual({
+      isPrompting: true,
+      promptRemaining: 0.5,
+    });
   });
 });

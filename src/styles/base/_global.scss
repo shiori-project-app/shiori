@@ -31,6 +31,14 @@ body {
   .skeleton {
     animation: skeleton-pulse 1.6s ease-in-out infinite alternate !important;
   }
+
+  .player__skip-timer {
+    transform: none !important;
+  }
+
+  .player__skip:not(.is-prompting) .player__skip-timer {
+    display: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

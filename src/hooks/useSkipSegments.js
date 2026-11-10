@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { fetchSkipTimes } from '@/api/services/skipService';
 import { useAsync } from '@/hooks/useAsync';
+import { useSkipPrompt } from '@/hooks/useSkipPrompt';
 import { fitSkipTimes, reachedByPlaying, segmentAt } from '@/utils/skipTimes';
 
 const SKIPPED_NOTICE_MS = 2500;
@@ -32,6 +33,8 @@ export const useSkipSegments = ({ malId, episode, duration, time, playing, seek,
 
   const skippedSegmentTypes = useRef(new Set());
   const previousTime = useRef(null);
+
+  const { isPrompting, promptRemaining } = useSkipPrompt(currentSegment, time);
 
   const [skippedSegmentType, setSkippedSegmentType] = useSkippedNotice();
 
@@ -67,7 +70,14 @@ export const useSkipSegments = ({ malId, episode, duration, time, playing, seek,
   }, [time]);
 
   return useMemo(
-    () => ({ segments, segment: currentSegment, skip: skipCurrentSegment, skipped: skippedSegmentType }),
-    [segments, currentSegment, skipCurrentSegment, skippedSegmentType],
+    () => ({
+      segments,
+      segment: currentSegment,
+      skip: skipCurrentSegment,
+      skipped: skippedSegmentType,
+      isPrompting,
+      promptRemaining,
+    }),
+    [segments, currentSegment, skipCurrentSegment, skippedSegmentType, isPrompting, promptRemaining],
   );
 };
