@@ -30,7 +30,7 @@ export const AnimeHeavenShowPicker = ({ animeHeavenShow }) => {
       {shows.length > 0 && (
         <>
           <label className="download-panel__label" htmlFor="animeheaven-show">
-            Show on AnimeHeaven <span className="download-panel__tag">1080p · subbed</span>
+            Show on AnimeHeaven <span className="download-panel__tag">subbed</span>
           </label>
 
           <Select
@@ -40,6 +40,11 @@ export const AnimeHeavenShowPicker = ({ animeHeavenShow }) => {
             onChange={pickShow}
             options={shows.map((show) => [show.code, show.title])}
           />
+
+          <p className="download-panel__note">
+            Downloads the highest resolution AnimeHeaven has for each episode, which isn’t always 1080p. The Downloads
+            page shows the real resolution once an episode finishes.
+          </p>
         </>
       )}
     </>

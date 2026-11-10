@@ -52,6 +52,7 @@ export const scanLibrary = callDesktopWithoutArguments('scanLibrary');
 export const showLibraryFile = callDesktop('showLibraryFile');
 
 export const getSubtitles = callDesktop('getSubtitles');
+export const getVideoResolutions = callDesktop('getVideoResolutions');
 export const openExternally = callDesktop('openExternally');
 
 export const saveExport = callDesktop('saveExport');
@@ -82,6 +83,7 @@ export const moveDownload = callDesktop('moveDownload');
 export const removeDownload = callDesktop('removeDownload');
 export const clearFinishedDownloads = callDesktopWithoutArguments('clearFinishedDownloads');
 export const showDownload = callDesktop('showDownload');
+export const getDownloadResolutions = callDesktop('getDownloadResolutions');
 
 export const getUpdateState = callDesktopWithoutArguments('getUpdateState');
 export const checkForUpdates = callDesktopWithoutArguments('checkForUpdates');

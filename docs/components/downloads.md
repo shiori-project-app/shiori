@@ -12,7 +12,7 @@
 - `TorrentRow` shows one torrent: title, details, and open and copy-magnet buttons.
 - `TorrentAppHint` tells the user qBittorrent wasn't found.
 - `ChoiceChips` is a chip-style single choice, used for resolution and audio.
-- `DownloadQueue` is the paged queue on the Downloads page, with progress, per-item actions, pause and resume all, and clear finished.
+- `DownloadQueue` is the paged queue on the Downloads page, with progress, the resolution of finished files (read live through `useVideoResolutions`), per-item actions, pause and resume all, and clear finished.
 - `DownloadFolderBar` shows the current download folder with change and open buttons.
 - `TrackButton` opens `TrackDialog`.
 - `TrackDialog` sets up automatic downloads: source, quality and starting episode, using `useTrackForm`.

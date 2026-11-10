@@ -4,8 +4,10 @@ import { Select } from '@/components/common/Select';
 import { useEpisodeAvailability } from '@/hooks/useEpisodeAvailability';
 import { useEpisodeTitles } from '@/hooks/useEpisodeTitles';
 import { useSession } from '@/hooks/useSession';
+import { useVideoResolutions } from '@/hooks/useVideoResolutions';
 import { cx } from '@/utils/classNames';
 import { blockCount, blockOf, blockRange, buildEpisode, episodeNumbersInRange } from '@/utils/episodes';
+import { formatResolution } from '@/utils/format';
 
 const CURRENT_EPISODE_SCROLL_OFFSET_PX = 80;
 
@@ -51,6 +53,12 @@ export const EpisodePanel = ({ series, current = 0, defaultEpisode = 1, variant 
     [series, firstEpisode, lastEpisode, extraTitles],
   );
 
+  const episodeRows = episodes.map((episode) => ({ episode, ...availabilityOf(episode.number) }));
+
+  const resolutions = useVideoResolutions(
+    episodeRows.filter(({ state }) => state === 'ready').map(({ file }) => file.path),
+  );
+
   useScrollCurrentEpisodeIntoView(listRef, isSideList, current);
 
   return (
@@ -66,13 +74,15 @@ export const EpisodePanel = ({ series, current = 0, defaultEpisode = 1, variant 
       )}
 
       <div ref={listRef} className={cx('episode-list', isSideList && 'episode-list--side')}>
-        {episodes.map((episode) => (
+        {episodeRows.map(({ episode, state, file }) => (
           <EpisodeRow
             key={episode.number}
             series={series}
             episode={episode}
             current={episode.number === current}
-            {...availabilityOf(episode.number)}
+            state={state}
+            file={file}
+            resolution={formatResolution(resolutions[file?.path])}
           />
         ))}
       </div>

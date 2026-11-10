@@ -31,7 +31,7 @@ const ShowInFolderButton = ({ episodeNumber, file }) => (
   </button>
 );
 
-const EpisodeListItem = ({ series, episode, current = false, state, file }) => {
+const EpisodeListItem = ({ series, episode, current = false, state, file, resolution }) => {
   const { watched } = useLibrary();
   const { hideSpoilers } = usePreferences();
 
@@ -81,7 +81,11 @@ const EpisodeListItem = ({ series, episode, current = false, state, file }) => {
             />
 
             {AVAILABILITY_LABELS[state] && (
-              <span className="episode-row__downloaded"> · {AVAILABILITY_LABELS[state]}</span>
+              <span className="episode-row__downloaded">
+                {' '}
+                · {AVAILABILITY_LABELS[state]}
+                {resolution && ` · ${resolution}`}
+              </span>
             )}
           </p>
         </div>

@@ -32,7 +32,7 @@
     top: 8px;
     z-index: 2;
     display: inline-flex;
-    align-items: center;
+    align-items: baseline;
     gap: 3px;
     padding: 2px 8px 2px 6px;
     border-radius: $radius-pill;
@@ -41,8 +41,7 @@
     @include font-sm-extrabold;
 
     .icon {
-      width: 13px;
-      height: 13px;
+      @include star-beside-text(13px, $font-sm);
     }
   }
 

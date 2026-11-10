@@ -15,17 +15,23 @@ const downloadingText = (download) => {
   return `${percent}% · ${transferredAmount(download)}${speed}`;
 };
 
+const completedText = (download, resolutionLabel) => {
+  const status = download.skipped ? 'Already downloaded' : 'Done';
+
+  return resolutionLabel ? `${status} · ${resolutionLabel}` : status;
+};
+
 const STATUS_TEXT_BY_STATE = {
   queued: (download) => (download.received ? `Waiting · ${transferredAmount(download)}` : 'Waiting'),
   downloading: downloadingText,
   paused: (download) => (download.total ? `Paused · ${transferredAmount(download)}` : 'Paused'),
-  completed: (download) => (download.skipped ? 'Already downloaded' : 'Done'),
+  completed: completedText,
   cancelled: () => 'Cancelled',
   failed: (download) => `Failed: ${download.error}`,
 };
 
-export const downloadStatusText = (download) =>
-  (STATUS_TEXT_BY_STATE[download.state] ?? STATUS_TEXT_BY_STATE.failed)(download);
+export const downloadStatusText = (download, resolutionLabel) =>
+  (STATUS_TEXT_BY_STATE[download.state] ?? STATUS_TEXT_BY_STATE.failed)(download, resolutionLabel);
 
 export const downloadPercent = (download) => {
   if (download.state === 'completed') return COMPLETE_PERCENT;

@@ -15,13 +15,13 @@ Each entry lists the client functions, their channels and the handler file in `e
 - `loadOfflineLibrary`, `saveOfflineSeries`, `removeOfflineSeries` and `saveOfflineSkipTimes` use `offline:load`, `:save-series`, `:remove-series` and `:save-skip-times` in `offline.js`.
 - `getTorrentApp` and `openMagnet` use `torrent:app` and `torrent:open` in `torrents.js`.
 - `scanLibrary` and `showLibraryFile` use `library:scan` and `library:show` in `library.js`.
-- `getSubtitles` and `openExternally` use `media:subtitles` and `media:open-external` in `media.js`.
+- `getSubtitles`, `getVideoResolutions` and `openExternally` use `media:subtitles`, `media:resolutions` and `media:open-external` in `media.js`.
 - `saveExport`, `openBackup` and `autoBackup` use `backup:save`, `:open` and `:auto` in `backup.js`.
 - `readAniListResponse` and `saveAniListResponse` use `anilist-cache:read` and `:save` in `anilistCache.js`.
 - `getCacheUsage`, `clearSubtitleCache` and `clearAniListData` use `caches:usage`, `:clear-subtitles` and `:clear-anilist` in `caches.js`.
 - `getDownloadFolderUsage`, `getFileSizes`, `chooseCleanupMoveFolder` and `cleanUpFile` use `cleanup:usage`, `:file-sizes`, `:choose-move-folder` and `:clean-file` in `cleanup.js`.
 - `getUpdateState`, `checkForUpdates`, `downloadUpdate` and `installUpdate` use `updates:get-state`, `:check`, `:download` and `:install` in `updates.js`.
-- `listDownloads`, `addDownloads`, the per-item actions (pause, resume, cancel, retry, move, remove, show), `pauseAllDownloads`, `resumeAllDownloads` and `clearFinishedDownloads` use the `downloads:*` channels in `downloads.js`.
+- `listDownloads`, `addDownloads`, the per-item actions (pause, resume, cancel, retry, move, remove, show), `pauseAllDownloads`, `resumeAllDownloads` and `clearFinishedDownloads` use the `downloads:*` channels in `downloads.js`. `getDownloadResolutions` uses `downloads:resolutions` there too, and only answers for files of completed jobs.
 
 ## Events from the main process
 

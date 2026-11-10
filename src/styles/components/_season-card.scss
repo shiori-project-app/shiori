@@ -86,6 +86,10 @@
     align-items: center;
     gap: 5px;
     @include font-md-extrabold;
+  }
+
+  &__airing {
+    color: var(--accent);
 
     .icon {
       width: 14px;
@@ -93,12 +97,13 @@
     }
   }
 
-  &__airing {
-    color: var(--accent);
-  }
-
   &__rating {
+    align-items: baseline;
     color: var(--gold);
+
+    .icon {
+      @include star-beside-text(14px, $font-md);
+    }
   }
 
   &__foot .btn {

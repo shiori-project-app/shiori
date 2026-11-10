@@ -21,6 +21,7 @@ import {
 } from '../downloads/queueStore.js';
 import { logError, logInfo } from '../logger.js';
 import { renameUnsafeShowFolders, savePathAfterMoves } from '../showFolderMigration.js';
+import { videoResolutionsOf } from '../videoResolutions.js';
 import { downloadsRoot, showFolder } from './paths.js';
 import { onSettingsChanged } from './settings.js';
 
@@ -187,6 +188,16 @@ const showDownload = (_event, savePath) => {
   else shell.openPath(path.dirname(savePath));
 };
 
+const finishedDownloadResolutions = (_event, savePaths) => {
+  const finishedSavePaths = new Set(
+    allJobs()
+      .filter((job) => job.state === 'completed')
+      .map((job) => job.savePath),
+  );
+
+  return videoResolutionsOf(savePaths.filter((savePath) => finishedSavePaths.has(savePath)));
+};
+
 const saveQueueBeforeQuit = () => {
   stopAllDownloads();
   requeueInterruptedJobs();
@@ -206,6 +217,7 @@ const DOWNLOAD_HANDLERS = {
   'downloads:remove': removeDownload,
   'downloads:clear-finished': clearFinishedDownloads,
   'downloads:show': showDownload,
+  'downloads:resolutions': finishedDownloadResolutions,
 };
 
 const moveJobsOutOfUnsafeFolders = () => {

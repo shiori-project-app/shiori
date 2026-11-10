@@ -19,6 +19,13 @@ describe('download status', () => {
     );
   });
 
+  it('adds the resolution label to finished downloads only', () => {
+    expect(downloadStatusText({ state: 'completed' }, '')).toBe('Done');
+    expect(downloadStatusText({ state: 'completed' }, '1080p')).toBe('Done · 1080p');
+    expect(downloadStatusText({ state: 'completed', skipped: true }, '1080p')).toBe('Already downloaded · 1080p');
+    expect(downloadStatusText({ state: 'queued', received: 0 }, '1080p')).toBe('Waiting');
+  });
+
   it('shows progress, full when completed', () => {
     expect(downloadPercent({ state: 'downloading', received: 30, total: 120 })).toBe(25);
     expect(downloadPercent({ state: 'completed', received: 0, total: 0 })).toBe(100);

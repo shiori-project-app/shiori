@@ -1,4 +1,5 @@
 @use 'sass:map';
+@use 'sass:math';
 @use 'variables' as *;
 
 @mixin below($name) {
@@ -25,6 +26,22 @@
 @mixin fill-parent {
   position: absolute;
   inset: 0;
+}
+
+@mixin drop-below-baseline($distance) {
+  position: relative;
+  top: $distance;
+  margin-top: -$distance;
+}
+
+@mixin star-beside-text($icon-size, $font-size) {
+  $font-size-in-pixels: math.div($font-size, 1rem) * $root-font-size;
+  $text-middle-above-baseline: $font-size-in-pixels * $body-font-cap-height-middle;
+  $star-middle-below-icon-top: $icon-size * $star-icon-visual-middle;
+
+  width: $icon-size;
+  height: $icon-size;
+  @include drop-below-baseline(math.round($icon-size - $text-middle-above-baseline - $star-middle-below-icon-top));
 }
 
 @mixin inside-rounded-frame {

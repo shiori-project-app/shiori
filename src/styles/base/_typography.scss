@@ -27,15 +27,14 @@
 .kicker {
   display: inline-flex;
   gap: 8px;
-  align-items: center;
+  align-items: baseline;
   @include font-md-extrabold;
   color: var(--gold);
   letter-spacing: 0.08em;
   text-transform: uppercase;
 
   .icon {
-    width: 15px;
-    height: 15px;
+    @include star-beside-text(15px, $font-md);
   }
 }
 

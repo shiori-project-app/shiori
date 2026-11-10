@@ -9,6 +9,7 @@ import { isVideoFileName } from '../../shared/videoFiles.js';
 import { folderUsage, writeFileAtomicallyAsync } from '../fileSystem.js';
 import { logError } from '../logger.js';
 import { readMkvSubtitleTracks } from '../mkvSubtitleReader.js';
+import { videoResolutionsOf } from '../videoResolutions.js';
 import { serveCover } from './offline.js';
 import { resolveDownloadPath } from './paths.js';
 
@@ -182,6 +183,9 @@ const openInDefaultPlayer = async (_event, relativePath) => {
 export const registerMediaHandlers = () => {
   protocol.handle(MEDIA_SCHEME, serveMedia);
   ipcMain.handle('media:subtitles', (_event, relativePath) => subtitlesFor(resolveDownloadPath(relativePath)));
+  ipcMain.handle('media:resolutions', (_event, relativePaths) =>
+    videoResolutionsOf(relativePaths, resolveDownloadPath),
+  );
   ipcMain.handle('media:open-external', openInDefaultPlayer);
   pruneSubtitleCache().catch((error) => logError('Subtitle cache cleanup failed', error));
 };
