@@ -1,6 +1,7 @@
 import { createContext, useCallback, useEffect, useRef, useState } from 'react';
 import { Toast } from '@/components/common/Toast';
 import { TOAST_MS } from '@/config/app.config';
+import { useLiveAnnouncement } from '@/hooks/useLiveAnnouncement';
 import { onUserDataSaveFailure } from '@/api/services/userDataStore';
 import { onStorageWriteFailure } from '@/utils/storage';
 
@@ -13,17 +14,28 @@ const USER_DATA_FAILURE_MESSAGE =
   'Shiori couldn’t save your library to disk. Check that the drive isn’t full, then export a backup in Settings → Backup.';
 
 export const ToastContext = createContext(null);
+export const ToastAnnouncementContext = createContext('');
 
 export const ToastProvider = ({ children }) => {
-  const [toast, setToast] = useState({ message: '', visible: false });
+  const [toast, setToast] = useState({ message: '', visible: false, shownCount: 0 });
   const hideTimer = useRef(0);
   const reportedFailureMessages = useRef(new Set());
+  const { announcement, announce, clearAnnouncement } = useLiveAnnouncement();
 
-  const showToast = useCallback((message, durationMs = TOAST_MS) => {
-    setToast({ message, visible: true });
-    clearTimeout(hideTimer.current);
-    hideTimer.current = setTimeout(() => setToast((current) => ({ ...current, visible: false })), durationMs);
-  }, []);
+  const hideToast = useCallback(() => {
+    setToast((current) => ({ ...current, visible: false }));
+    clearAnnouncement();
+  }, [clearAnnouncement]);
+
+  const showToast = useCallback(
+    (message, durationMs = TOAST_MS) => {
+      setToast((current) => ({ message, visible: true, shownCount: current.shownCount + 1 }));
+      announce(message);
+      clearTimeout(hideTimer.current);
+      hideTimer.current = setTimeout(hideToast, durationMs);
+    },
+    [announce, hideToast],
+  );
 
   const reportFailureOnce = useCallback(
     (message) => {
@@ -47,8 +59,10 @@ export const ToastProvider = ({ children }) => {
 
   return (
     <ToastContext value={showToast}>
-      {children}
-      <Toast message={toast.message} visible={toast.visible} />
+      <ToastAnnouncementContext value={announcement}>
+        {children}
+        <Toast message={toast.message} visible={toast.visible} shownCount={toast.shownCount} />
+      </ToastAnnouncementContext>
     </ToastContext>
   );
 };

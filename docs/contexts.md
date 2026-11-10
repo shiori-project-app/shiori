@@ -2,7 +2,7 @@
 
 `app/AppProviders.jsx` composes the providers in this order: Toast, Appearance, Preferences, Settings, `UserDataGate`, Library, Session, Downloads, LocalFiles, Tracking. Each has a `useX` hook in `src/hooks/`, except LocalFiles, which is read with `useContext(LocalFilesContext)`.
 
-- `ToastContext` provides `showToast(message, ms)`. It also shows storage and save failure warnings once.
+- `ToastContext` provides `showToast(message, ms)`. It also shows storage and save failure warnings once. `ToastAnnouncementContext` provides the text to announce for the toast on screen (empty when none), read with `useToastAnnouncement()`. Each toast clears it first and sets it a moment later (`useLiveAnnouncement`), so a repeated message is announced again.
 - `AppearanceContext` provides `theme`, `accent`, `accentForTheme`, `setTheme` and `setAccent`. It applies them to `<html>` and saves them in `localStorage`.
 - `PreferencesContext` provides `titleLanguage`, `hideEcchi`, `hideSpoilers`, `autoSkip`, `reduceMotion`, `cleanupAfterDays`, `cleanupAction` and `setPreference`. Values are saved in `localStorage`.
 - `SettingsContext` provides the main-process settings:

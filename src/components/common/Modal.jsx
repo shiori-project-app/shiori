@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { Icon } from '@/components/common/Icon';
+import { ToastAnnouncement } from '@/components/common/ToastAnnouncement';
 
 const PRIMARY_MOUSE_BUTTON = 0;
 
@@ -53,6 +54,8 @@ export const Modal = ({ title, subtitle, dismissible = true, onClose, children }
 
         {children}
       </div>
+
+      <ToastAnnouncement />
     </dialog>,
     document.body,
   );

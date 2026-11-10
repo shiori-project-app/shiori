@@ -1,6 +1,6 @@
 # Hooks: data, library, lists
 
-`useLibrary`, `usePreferences`, `useAppearance`, `useSettings`, `useSession`, `useDownloads`, `useTracking` and `useToast` each return their context (see [../contexts.md](../contexts.md)). `usePlaybackProgress` and `useLiveDownloads` return the fast-changing parts, which are kept apart so that few components re-render.
+`useLibrary`, `usePreferences`, `useAppearance`, `useSettings`, `useSession`, `useDownloads`, `useTracking` and `useToast` each return their context, and `useToastAnnouncement` returns the text of the toast on screen for live regions (see [../contexts.md](../contexts.md)). `usePlaybackProgress` and `useLiveDownloads` return the fast-changing parts, which are kept apart so that few components re-render.
 
 - `useAsync(load, deps)` returns `{ data, error, loading, retry }` and ignores stale responses. `deps` must be JSON-serializable, because they form the request key.
 - `usePersistentState(key, initial)` is state saved to `localStorage`, used for preferences.
