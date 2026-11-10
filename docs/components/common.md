@@ -7,7 +7,7 @@
 - `ErrorBoundary` is the one allowed class component and resets on `resetKey`. `PageCrashMessage` is its default fallback.
 - `Icon` renders an inline SVG by `name`.
 - `LoadError` shows "Couldn’t load data", or "You’re offline", with a Retry button.
-- `Modal` is a dialog with a title, subtitle and close button. `dismissible={false}` blocks Esc, the backdrop and the close button while work that can't be stopped is running.
+- `Modal` is a dialog with a title, subtitle and close button, and a `ToastAnnouncement` so toasts are announced while it's open. `dismissible={false}` blocks Esc, the backdrop and the close button while work that can't be stopped is running.
 - `OfflineNotice` shows "You’re offline" with links to My List and Downloads. `OnlineOnly` shows it instead of `children` while offline.
 - `Pager` renders page buttons with gaps, from `pageInfo`.
 - `ScrollRow` is a horizontal rail with arrows, using `useHorizontalScroll`.
@@ -17,5 +17,6 @@
 - `Switch` is a toggle switch.
 - `Tabs` is a tab bar with arrow-key selection. `tabElementId` links tabs to panels.
 - `Tags` is a tag list, clickable when `onSelect` is given.
-- `Toast` is the toast element, shown by `ToastProvider`.
+- `Toast` is the toast, shown by `ToastProvider`. Modal dialogs open in the browser's top layer, above any `z-index`, so the toast is a manual popover in the top layer too (`useTopLayerPopover`). It opens while a toast is visible and closes after it fades, and moves back on top if a dialog, popover or fullscreen opens over it. The popover copy is hidden from screen readers; `ToastAnnouncement` reads it out instead.
+- `ToastAnnouncement` is an `sr-only` live region with the current toast text. `Toast` renders one, and every `Modal` renders one inside its dialog, because an open modal makes everything outside it inert and silent.
 - `WatchedBadge` is the "watched" badge on cards.
