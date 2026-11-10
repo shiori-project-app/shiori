@@ -1,8 +1,11 @@
+import { SKIP_PROMPT_SECONDS } from '@/config/app.config';
+
 export const SKIP_TYPES = { op: 'intro', 'mixed-op': 'intro', ed: 'ending', 'mixed-ed': 'ending', recap: 'recap' };
 
 const MAX_LENGTH_DIFFERENCE_SECONDS = 30;
 const MIN_SEGMENT_SECONDS = 5;
 const MAX_PLAYBACK_STEP_SECONDS = 2;
+const SEEK_BACK_THRESHOLD_SECONDS = 1;
 const SEGMENT_END_MARGIN_SECONDS = 0.5;
 const SEGMENT_START_TOLERANCE_SECONDS = 1;
 const UNKNOWN_LENGTH_RANK = MAX_LENGTH_DIFFERENCE_SECONDS + 1;
@@ -41,8 +44,41 @@ export const fitSkipTimes = (submissions, duration) => {
     .map(({ type, start, end }) => ({ type, start, end }));
 };
 
+export const segmentShownUntil = (segment) => segment.end - SEGMENT_END_MARGIN_SECONDS;
+
 export const segmentAt = (segments, time) =>
-  segments.find((segment) => time >= segment.start && time < segment.end - SEGMENT_END_MARGIN_SECONDS) ?? null;
+  segments.find((segment) => time >= segment.start && time < segmentShownUntil(segment)) ?? null;
+
+export const seekedBack = (previousTime, time) =>
+  previousTime != null && time < previousTime - SEEK_BACK_THRESHOLD_SECONDS;
+
+export const NO_SKIP_PROMPT = { segmentKey: null, startedAt: 0 };
+
+const NOT_PROMPTING = { isPrompting: false, promptRemaining: 0 };
+
+export const skipSegmentKey = (segment) => (segment ? `${segment.type}-${segment.start}` : null);
+
+export const nextSkipPrompt = (currentPrompt, segmentKey, previousTime, time) => {
+  if (segmentKey === null) return NO_SKIP_PROMPT;
+
+  const startsPrompt = segmentKey !== currentPrompt.segmentKey || seekedBack(previousTime, time);
+
+  return startsPrompt ? { segmentKey, startedAt: time } : currentPrompt;
+};
+
+export const skipPromptProgress = (segment, prompt, time) => {
+  const segmentKey = skipSegmentKey(segment);
+
+  if (segmentKey === null) return NOT_PROMPTING;
+
+  const startedAt = segmentKey === prompt.segmentKey ? prompt.startedAt : time;
+  const promptSeconds = Math.min(SKIP_PROMPT_SECONDS, segmentShownUntil(segment) - startedAt);
+  const secondsLeft = promptSeconds - Math.max(0, time - startedAt);
+
+  const isPrompting = secondsLeft > 0;
+
+  return { isPrompting, promptRemaining: isPrompting ? secondsLeft / promptSeconds : 0 };
+};
 
 export const reachedByPlaying = (segment, previousTime, time) =>
   previousTime != null &&

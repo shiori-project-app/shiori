@@ -17,6 +17,7 @@ export const STATS_GENRE_COUNT = 8;
 export const SUGGEST_DEBOUNCE_MS = 320;
 export const TOAST_MS = 2400;
 export const PLAYER_IDLE_MS = 2600;
+export const SKIP_PROMPT_SECONDS = 6;
 export const WATCHED_PROGRESS_RATIO = 0.9;
 export const AUTOPLAY_COUNTDOWN_S = 5;
 export const PLAYBACK_RATES = [0.5, 1, 1.25, 1.5, 2];

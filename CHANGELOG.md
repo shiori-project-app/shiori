@@ -8,6 +8,11 @@ Every version of Shiori and what changed in it. The newest is first. The release
 
 - **Real resolution:** finished downloads and downloaded episodes show the resolution read from the file, such as 1080p. It works for MP4, MKV and WebM files from any source.
 
+### Changed
+
+- **Skip button:** "Skip intro" and "Skip ending" now show for a few seconds when the segment starts, with a bar counting down, then step aside until you move the mouse, so you can watch the intro or ending in peace. The S key still skips at any time.
+- **Player controls** now fade a few seconds after an episode starts playing, even if you haven't touched the mouse.
+
 ### Fixed
 
 - The AnimeHeaven picker and tracking list no longer claim 1080p, because AnimeHeaven doesn't say what it serves.

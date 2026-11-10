@@ -1,7 +1,7 @@
-import { memo, useCallback, useRef, useState } from 'react';
-import { Icon } from '@/components/common/Icon';
+import { useCallback, useRef, useState } from 'react';
 import { EndCard } from '@/components/player/EndCard';
 import { PlaybackError } from '@/components/player/PlaybackError';
+import { PlaybackIndicator } from '@/components/player/PlaybackIndicator';
 import { PictureInPictureNote } from '@/components/player/PictureInPictureNote';
 import { PlayerControls, VideoTimeContext } from '@/components/player/PlayerControls';
 import { SkipSegmentButton } from '@/components/player/SkipSegmentButton';
@@ -24,21 +24,6 @@ import { useVideoPlayer } from '@/hooks/useVideoPlayer';
 import { cx } from '@/utils/classNames';
 import { localVideoUrl } from '@/utils/media';
 import { isPlayerControlTarget } from '@/utils/player';
-
-const PlaybackIndicatorContent = ({ player }) => {
-  if (player.error) return null;
-  if (player.waiting) return player.ended ? null : <span className="player__spinner" aria-label="Loading" />;
-
-  return (
-    <div className="player__big">
-      <span className="player__big-icon">
-        <Icon name={player.playing ? 'pause' : 'play'} />
-      </span>
-    </div>
-  );
-};
-
-const PlaybackIndicator = memo(PlaybackIndicatorContent);
 
 export const Player = ({ series, episode, file, nextEpisode, nextReady, onStarted, onWatched }) => {
   const progress = usePlaybackProgress();
