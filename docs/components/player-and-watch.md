@@ -8,10 +8,10 @@
 - `PictureInPictureNote` covers the stage while the video plays in picture-in-picture, with a "Bring it back" button.
 - `PlaybackIndicator` shows the loading spinner while the video waits, or the big play and pause icon.
 - `SkipSegmentButton` is the "Skip intro" or "Skip ending" button. It shows on its own with a draining bar while `isPrompting`. The bar's width is `promptRemaining`, set on each time update with a short transition, so it pauses, buffers, seeks and changes speed with the video. With reduced motion it stays full and still. After that it shows only with the player controls, or while the pointer rests on it. The `s` key skips the whole time.
-- `EndCard` appears after an episode, offering replay and the next episode with an autoplay countdown, or a download if it isn't available. The countdown and "Play next" open the next episode already playing.
-- `EpisodeUnavailable` offers a download when the episode isn't downloaded.
+- `EndCard` appears after an episode, offering replay and the next episode with an autoplay countdown, or a download if it isn't available. The countdown and "Play next" open the next episode already playing. It ends where the player controls begin (CSS anchor positioning on `--player-controls`), so fullscreen and the seek bar stay usable, and fullscreen carries over to the next episode. Once an episode ends the controls take the same dimmed background and the big play icon is hidden.
+- `EpisodeUnavailable` offers a download when the episode isn't downloaded, and leaves fullscreen.
 - `PlaybackError` shows "Shiori can’t play this file", with open-externally and show-in-folder actions.
-- `PlayerCrashMessage` is the `ErrorBoundary` fallback for the player.
+- `PlayerCrashMessage` is the `ErrorBoundary` fallback for the player, and leaves fullscreen.
 
 ## Others
 

@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { Link, Navigate, useParams } from 'react-router';
 import { EpisodePanel } from '@/components/anime/EpisodePanel';
 import { ErrorBoundary } from '@/components/common/ErrorBoundary';
@@ -14,6 +14,7 @@ import { WatchActions } from '@/components/watch/WatchActions';
 import { seriesPath } from '@/constants/routes';
 import { useEpisodeAvailability } from '@/hooks/useEpisodeAvailability';
 import { useEpisodeTitles } from '@/hooks/useEpisodeTitles';
+import { exitFullscreen } from '@/hooks/useFullscreen';
 import { useLibrary } from '@/hooks/useLibrary';
 import { useDisplayTitle } from '@/hooks/usePreferences';
 import { useSeries } from '@/hooks/useSeries';
@@ -119,6 +120,8 @@ export const WatchPage = () => {
   const { data: series, error, loading, retry } = useSeries(Number(id));
 
   const episodeNumber = Number(ep);
+
+  useEffect(() => exitFullscreen, []);
 
   if (error) return <LoadError error={error} onRetry={retry} />;
   if (loading) return <HeroSkeleton />;
