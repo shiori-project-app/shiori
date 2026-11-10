@@ -42,6 +42,7 @@ contextBridge.exposeInMainWorld('shiori', {
   showLibraryFile: invokeChannel('library:show'),
 
   getSubtitles: invokeChannel('media:subtitles'),
+  getVideoResolutions: invokeChannel('media:resolutions'),
   openExternally: invokeChannel('media:open-external'),
 
   saveExport: invokeChannel('backup:save'),
@@ -72,6 +73,7 @@ contextBridge.exposeInMainWorld('shiori', {
   removeDownload: invokeChannel('downloads:remove'),
   clearFinishedDownloads: invokeChannel('downloads:clear-finished'),
   showDownload: invokeChannel('downloads:show'),
+  getDownloadResolutions: invokeChannel('downloads:resolutions'),
 
   getUpdateState: invokeChannel('updates:get-state'),
   checkForUpdates: invokeChannel('updates:check'),

@@ -84,3 +84,7 @@ $ring-on-artwork: 0 0 0 2px $ink-dim;
 $ring-focus: 0 0 0 3px color-mix(in srgb, var(--accent) 30%, transparent);
 $ring-focus-soft: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
 $ring-seek-thumb: 0 0 0 10px color-mix(in srgb, var(--accent) 25%, transparent);
+
+$root-font-size: 16px;
+$body-font-cap-height-middle: 0.3525;
+$star-icon-visual-middle: 0.5146;

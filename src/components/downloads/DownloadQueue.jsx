@@ -4,8 +4,10 @@ import { Icon } from '@/components/common/Icon';
 import { Pager } from '@/components/common/Pager';
 import { useDownloads, useLiveDownloads } from '@/hooks/useDownloads';
 import { usePagedList } from '@/hooks/usePagedList';
+import { useVideoResolutions } from '@/hooks/useVideoResolutions';
 import { cx } from '@/utils/classNames';
 import { downloadPercent, downloadStatusText, queueSummary } from '@/utils/downloadStatus';
+import { formatResolution } from '@/utils/format';
 import { isActive, isPending, isRetryable } from '@shared/downloadStates';
 
 const IconButton = ({ icon, label, onClick, disabled }) => (
@@ -21,7 +23,7 @@ const IconButton = ({ icon, label, onClick, disabled }) => (
   </button>
 );
 
-const QueueItem = ({ download, isFirst, isLast, actions }) => {
+const QueueItem = ({ download, resolutionLabel, isFirst, isLast, actions }) => {
   const isWaiting = isPending(download);
 
   return (
@@ -35,7 +37,7 @@ const QueueItem = ({ download, isFirst, isLast, actions }) => {
 
       <div className="download__info">
         <p className="download__title">{download.label}</p>
-        <p className="download__status">{downloadStatusText(download)}</p>
+        <p className="download__status">{downloadStatusText(download, resolutionLabel)}</p>
 
         <div className="download__bar">
           <span style={{ width: `${downloadPercent(download)}%` }} />
@@ -104,6 +106,11 @@ export const DownloadQueue = () => {
 
   const { pageItems, pageInfo, firstItemIndex, setPage } = usePagedList(downloads);
 
+  const resolutions = useVideoResolutions(
+    pageItems.filter((download) => download.state === 'completed').map((download) => download.savePath),
+    'finishedDownloads',
+  );
+
   if (!downloads.length) {
     return (
       <EmptyState title="No downloads yet">
@@ -124,6 +131,7 @@ export const DownloadQueue = () => {
             <DownloadQueueItem
               key={download.id}
               download={download}
+              resolutionLabel={formatResolution(resolutions[download.savePath])}
               isFirst={queuePosition === 0}
               isLast={queuePosition === downloads.length - 1}
               actions={itemActions}

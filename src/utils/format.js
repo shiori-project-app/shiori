@@ -7,7 +7,23 @@ const MINUTES_PER_DAY = 1440;
 const MILLISECONDS_PER_MINUTE = 60000;
 const BYTES_PER_KILOBYTE = 1024;
 
+const STANDARD_VIDEO_HEIGHTS = [2160, 1440, 1080, 900, 720, 576, 540, 480, 360, 240];
+const STANDARD_HEIGHT_TOLERANCE = 0.03;
+const HEIGHT_PER_WIDTH_IN_WIDESCREEN = 9 / 16;
+
 export const twoDigits = (number) => String(number).padStart(2, '0');
+
+const standardHeightNear = (frameHeight) =>
+  STANDARD_VIDEO_HEIGHTS.find((height) => Math.abs(frameHeight - height) <= height * STANDARD_HEIGHT_TOLERANCE);
+
+export const formatResolution = (resolution) => {
+  if (!resolution) return '';
+
+  const widescreenHeight = Math.max(resolution.height, Math.round(resolution.width * HEIGHT_PER_WIDTH_IN_WIDESCREEN));
+  const standardHeight = standardHeightNear(widescreenHeight) ?? standardHeightNear(resolution.height);
+
+  return `${standardHeight ?? widescreenHeight}p`;
+};
 
 export const formatDuration = (totalSeconds) => {
   const wholeSeconds = Math.max(0, Math.floor(totalSeconds));

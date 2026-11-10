@@ -9,6 +9,6 @@
 - `watchedCleanup.js` exports `cleanupCutoff`, `seriesIdsWithDueEpisodes`, `episodesBySeries`, `totalBytes`, `findCleanupCandidates` (only dated, watched, finished files, keeping a file another episode still needs) and `initiallySelectedPaths` (confident matches only).
 - `libraryScan.js` exports `isSameScan`, which lets a rescan that found nothing new keep the existing file list.
 - `downloads.js` exports `showFolderLabel` and `episodeFileName`, which produces names like `"<title> - 05.mp4"`.
-- `downloadStatus.js` builds queue item text: `downloadStatusText`, `downloadPercent` and `queueSummary`.
+- `downloadStatus.js` builds queue item text: `downloadStatusText` (which adds a finished file's resolution label when given one), `downloadPercent` and `queueSummary`.
 - `media.js` exports `localVideoUrl(file)`, which builds the `shiori-media://video/...` URL for the player.
 - `fileLinks.js` handles files linked by hand, along with helpers for changing links, building locations and searching. `matchLinkedSeriesFiles` applies the automatic match, then linked folders, then linked files, each overriding the last, except that an unfinished file never hides a finished one. A linked folder reads per-season numbers unless they run past the season.

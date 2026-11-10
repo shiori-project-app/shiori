@@ -1,14 +1,21 @@
 import fs from 'node:fs';
 import zlib from 'node:zlib';
+import {
+  childElements,
+  findChild,
+  MATROSKA_IDS,
+  MAX_ELEMENT_HEADER_BYTES,
+  MAX_TRACKS_BYTES,
+  readElementHeader,
+  readElementSize,
+  readUnsigned,
+} from './ebml.js';
 
 const ELEMENT_IDS = {
-  segment: 0x18538067,
+  ...MATROSKA_IDS,
   info: 0x1549a966,
   timecodeScale: 0x2ad7b1,
-  tracks: 0x1654ae6b,
-  trackEntry: 0xae,
   trackNumber: 0xd7,
-  trackType: 0x83,
   codecId: 0x86,
   codecPrivate: 0x63a2,
   language: 0x22b59c,
@@ -18,7 +25,6 @@ const ELEMENT_IDS = {
   contentCompression: 0x5034,
   compressionAlgorithm: 0x4254,
   compressionSettings: 0x4255,
-  cluster: 0x1f43b675,
   clusterTimecode: 0xe7,
   blockGroup: 0xa0,
   block: 0xa1,
@@ -42,78 +48,11 @@ const ZLIB_COMPRESSION = 0;
 const HEADER_STRIPPING_COMPRESSION = 3;
 const DEFAULT_TIMECODE_SCALE_NANOSECONDS = 1000000;
 const NANOSECONDS_PER_MILLISECOND = 1000000;
-const MAX_ELEMENT_HEADER_BYTES = 12;
 const BLOCK_HEADER_BYTES = 12;
-const MAX_TRACKS_BYTES = 64 * 1024 * 1024;
 const MAX_SUBTITLE_BLOCK_BYTES = 16 * 1024 * 1024;
 const BLOCK_TIMECODE_BYTES = 2;
 const BLOCK_FLAGS_BYTES = 1;
-const BITS_PER_BYTE = 8;
-const BYTE_VALUES = 256;
 const DEFAULT_READ_WINDOW_BYTES = 4 * 1024 * 1024;
-
-const variableLengthOf = (firstByte) => (firstByte === 0 ? 0 : Math.clz32(firstByte) - 23);
-
-const readElementId = (bytes, offset) => {
-  const length = variableLengthOf(bytes[offset]);
-
-  if (length === 0 || length > 4 || offset + length > bytes.length) return null;
-
-  return { value: bytes.readUIntBE(offset, length), length };
-};
-
-const readElementSize = (bytes, offset) => {
-  const length = variableLengthOf(bytes[offset]);
-
-  if (length === 0 || offset + length > bytes.length) return null;
-
-  const valueBitsInFirstByte = BITS_PER_BYTE - length;
-  const firstValueBits = bytes[offset] & ((1 << valueBitsInFirstByte) - 1);
-  let value = firstValueBits;
-
-  let hasOnlySetBits = firstValueBits === (1 << valueBitsInFirstByte) - 1;
-
-  for (let index = 1; index < length; index += 1) {
-    value = value * BYTE_VALUES + bytes[offset + index];
-    hasOnlySetBits &&= bytes[offset + index] === BYTE_VALUES - 1;
-  }
-
-  return { value: hasOnlySetBits ? null : value, length };
-};
-
-const readElementHeader = (bytes, offset) => {
-  const id = readElementId(bytes, offset);
-
-  if (!id) return null;
-
-  const size = readElementSize(bytes, offset + id.length);
-
-  if (!size) return null;
-
-  return { id: id.value, size: size.value, headerLength: id.length + size.length };
-};
-
-const readUnsigned = (bytes) => bytes.reduce((total, byte) => total * BYTE_VALUES + byte, 0);
-
-const childElements = (bytes) => {
-  const children = [];
-  let offset = 0;
-
-  while (offset < bytes.length) {
-    const header = readElementHeader(bytes, offset);
-
-    if (!header || header.size === null) break;
-
-    const start = offset + header.headerLength;
-
-    children.push({ id: header.id, data: bytes.subarray(start, start + header.size) });
-    offset = start + header.size;
-  }
-
-  return children;
-};
-
-const findChild = (children, id) => children.find((child) => child.id === id)?.data;
 
 const compressionOf = (trackChildren) => {
   const encodings = findChild(trackChildren, ELEMENT_IDS.contentEncodings);

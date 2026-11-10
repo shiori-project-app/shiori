@@ -15,7 +15,7 @@ import { formatDateTime } from '@/utils/format';
 const resolutionLabel = (resolution) => RESOLUTION_OPTIONS.find(([value]) => value === resolution)?.[1] ?? resolution;
 
 const trackingSourceText = (entry) => {
-  if (entry.source === 'animeheaven') return 'AnimeHeaven · 1080p subbed';
+  if (entry.source === 'animeheaven') return 'AnimeHeaven · subbed';
   if (entry.source === 'subsplease') return `SubsPlease · ${entry.resolution}p`;
 
   return `Nyaa · ${resolutionLabel(entry.resolution)} · ${entry.audio === 'dub' ? 'English dub' : 'any audio'}`;

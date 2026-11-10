@@ -18,7 +18,7 @@
   - `downloads` is the main-process queue reduced to `id`, `seriesId`, `episode` and `state`, and changes only when one of those does.
   - `useLiveDownloads()` returns full jobs with bytes and speed, at about 5 updates a second. Use it only to show progress.
   - Actions: `queueEpisodes`, `retry`, `pause`, `resume`, `pauseAll`, `resumeAll`, `cancel`, `move`, `remove`, `clearFinished` and `showInFolder`.
-- `LocalFilesContext` provides the library scan (`root`, `files`, `isUnreachable`) and `rescan`:
+- `LocalFilesContext` provides the library scan (`root`, `files`, `isUnreachable`), `rescan` and `subscribeToRescans(listener)`, which calls the listener after every finished scan, changed or not, and returns an unsubscribe function:
   - Tracking and offline sync do nothing while the folder is unreachable, because an empty list proves nothing.
   - It rescans when a download finishes and on window focus, at most every 15 s, and keeps the old list when nothing changed.
 - `TrackingContext` provides `tracked` (from a user data file), `checking`, `nextCheckAt`, `track`, `untrack`, `checkNow` and `markEpisodesHandled`, which stops tracking from downloading those episodes again. It schedules checks and checks again on system resume. A check requested during a running check waits its turn (`withQueuedCheck`).

@@ -3,7 +3,7 @@
 - `arrays.js` exports `chunk`, `uniqueBy`, `sum`, `takeWhile` and `randomItem`.
 - `async.js` exports `sleep`, `mapSequentially` and `findSequentially`, which you should use for sequential async work instead of loops. `rememberRequest` keeps one shared promise per key and forgets a failed one so it can be retried.
 - `classNames.js` exports `cx(...)`, which joins truthy class names.
-- `format.js` exports `formatDuration`, `formatHours` (one decimal under 10 h), `formatCountdown`, `formatRating`, `formatDateTime`, `formatDate`, `formatBytes`, `pluralize`, `formatTitleCount`, `capitalize` and `todayAsIsoDate`.
+- `format.js` exports `formatDuration`, `formatHours` (one decimal under 10 h), `formatCountdown`, `formatRating`, `formatDateTime`, `formatDate`, `formatBytes`, `formatResolution` (names a size by the standard height within 3% of its height at 16:9, or else of its own height, so a cropped 1920×800 counts as 1080p, 3440×1440 is 1440p and an unusual 1706×960 stays 960p; an ultrawide 2560×1080 reads as 1440p, the price of reading cropped films correctly), `pluralize`, `formatTitleCount`, `capitalize` and `todayAsIsoDate`.
 - `http.js` exports `fetchWithTimeout`. Every `fetch` from the page goes through it.
 - `seekCoalescer.js` exports `createSeekCoalescer`, which runs one video seek at a time. While one runs, only the latest target waits, which keeps seek-bar drags and held arrow keys responsive.
 - `rateLimitedQueue.js` exports `createRateLimitedQueue`, with a burst, a per-minute rate, concurrency, `pauseFor` and `matchServerAllowance`, which follows what the server advertises. AniList uses it.

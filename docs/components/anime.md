@@ -17,7 +17,7 @@ These are the series and episode building blocks used across pages.
   - When collapsed it shows 5 titles (`WATCH_ORDER_PREVIEW`) around the current show, and "View more" shows all of them. The view and expansion reset when the series changes.
   - It skips the fetch when `series.hasWatchOrder === false`, and shows a same-width skeleton while loading so the episode column never reflows.
 - `EpisodePanel` lists a series' episodes in blocks of 24, with availability and titles, and scrolls the current episode into view.
-- `EpisodeRow` is one row in `EpisodePanel`: thumbnail, status, watched badge, show in folder and spoiler blur.
+- `EpisodeRow` is one row in `EpisodePanel`: thumbnail, status, the downloaded file's resolution, watched badge, show in folder and spoiler blur.
 - `EpisodeCard` is an episode card with thumbnail and progress, used on Home and History.
 - `EpisodeThumbnail` exports `episodeArtwork`, `WatchedCheck`, `PlayOverlay` and `EpisodeThumbnail`.
 - `EpisodeLink` links to the watch page when the episode is ready. Otherwise it's a button that opens the download dialog.

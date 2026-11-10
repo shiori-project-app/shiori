@@ -2,6 +2,17 @@
 
 Every version of Shiori and what changed in it. The newest is first. The release notes on GitHub come from this file.
 
+## Unreleased
+
+### Added
+
+- **Real resolution:** finished downloads and downloaded episodes show the resolution read from the file, such as 1080p. It works for MP4, MKV and WebM files from any source.
+
+### Fixed
+
+- The AnimeHeaven picker and tracking list no longer claim 1080p, because AnimeHeaven doesn't say what it serves.
+- Rating stars now line up with the text beside them on the home slideshow, poster cards, compact rows and season cards.
+
 ## 1.0.0
 
 The first release.

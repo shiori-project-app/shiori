@@ -81,6 +81,44 @@ describe('download queue actions', () => {
     fs.rmSync(testFolder.path, { recursive: true, force: true });
   });
 
+  it('reads the resolution of finished jobs only, so the page can’t read any path it likes', async () => {
+    const movieWithResolution = (width, height) => {
+      const box = (type, ...contents) => {
+        const body = Buffer.concat(contents);
+        const header = Buffer.alloc(8);
+
+        header.writeUInt32BE(body.length + 8);
+        header.write(type, 4, 'latin1');
+
+        return Buffer.concat([header, body]);
+      };
+
+      const trackHeader = Buffer.alloc(84);
+      const handler = Buffer.alloc(24);
+
+      trackHeader[3] = 1;
+      trackHeader.writeUInt16BE(width, 76);
+      trackHeader.writeUInt16BE(height, 80);
+      handler.write('vide', 8, 'latin1');
+
+      return box('moov', box('trak', box('tkhd', trackHeader), box('mdia', box('hdlr', handler))));
+    };
+
+    const finishedJob = jobIn('completed', 'finished.mp4');
+    const unfinishedJob = jobIn('paused', 'unfinished.mp4');
+    const notAJob = path.join(testFolder.path, 'not-a-job.mp4');
+
+    [finishedJob.savePath, unfinishedJob.savePath, notAJob].forEach((filePath) =>
+      fs.writeFileSync(filePath, movieWithResolution(1280, 720)),
+    );
+
+    replaceJobs([finishedJob, unfinishedJob]);
+
+    expect(await invoke('downloads:resolutions', [finishedJob.savePath, unfinishedJob.savePath, notAJob])).toEqual({
+      [finishedJob.savePath]: { width: 1280, height: 720 },
+    });
+  });
+
   it('cancels a running download, removes its file, and does not restart it', async () => {
     const job = await startRunningJob('cancel-running.mp4');
 

@@ -78,14 +78,13 @@
     flex: none;
     margin-right: 3px;
     display: inline-flex;
-    align-items: center;
+    align-items: baseline;
     gap: 3px;
     color: var(--gold);
     font-weight: $weight-extrabold;
 
     .icon {
-      width: 12px;
-      height: 12px;
+      @include star-beside-text(12px, $font-md);
     }
   }
 

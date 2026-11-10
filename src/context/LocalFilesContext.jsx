@@ -20,6 +20,13 @@ export const LocalFilesProvider = ({ children }) => {
   const showToast = useToast();
 
   const lastScanStartedAt = useRef(0);
+  const rescanListeners = useRef(new Set());
+
+  const subscribeToRescans = useCallback((listener) => {
+    rescanListeners.current.add(listener);
+
+    return () => rescanListeners.current.delete(listener);
+  }, []);
 
   const rescan = useCallback(async () => {
     if (!window.shiori) return EMPTY_SCAN;
@@ -30,6 +37,7 @@ export const LocalFilesProvider = ({ children }) => {
       const scanResult = await scanLibrary();
 
       setScan((currentScan) => (isSameScan(currentScan, scanResult) ? currentScan : scanResult));
+      rescanListeners.current.forEach((listener) => listener());
 
       return scanResult;
     } catch {
@@ -59,7 +67,7 @@ export const LocalFilesProvider = ({ children }) => {
     }
   }, [scan.isUnreachable, scan.root, showToast]);
 
-  const value = useMemo(() => ({ ...scan, rescan }), [scan, rescan]);
+  const value = useMemo(() => ({ ...scan, rescan, subscribeToRescans }), [scan, rescan, subscribeToRescans]);
 
   return <LocalFilesContext value={value}>{children}</LocalFilesContext>;
 };
